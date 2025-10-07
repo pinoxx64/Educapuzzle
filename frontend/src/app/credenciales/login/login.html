@@ -1,1 +1,26 @@
-<p>login works!</p>
+<div class="login-container">
+    <h3>Inicia Sesión</h3>
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+        <label for="email">Correo electronico</label>
+        <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="email"
+            required
+        /> 
+        <label for="password">Contraseña</label>
+        <input
+            type="password"
+            id="password"
+            name="password"
+            [(ngModel)]="password"
+            required
+        />
+        <button type="submit" style="color: black;" [disabled]="!loginForm.valid">Iniciar Sesión</button>
+    </form> 
+        <!-- <a href="#">Forget Password<br> </a> -->
+    <div class="text-center">
+        <p style="color: #59238F;">Registrate</p>
+    </div>
+</div>
