@@ -1,26 +1,58 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class Usuario extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+import { DataTypes, Model } from "sequelize";
+import db from '../database/Connection.js'
+import UsuarioRol from "./usuariorol.js";
+import Rol from "./rol.js"
+import bcrypt from "bcrypt";
+
+class Usuario extends Model {
+  static associate(models) { }
+}
+Usuario.init({
+  id: {
+    type: DataTypes.BIGINT,
+    primaryKey: true,
+    allowNull: false,
+    unique: true,
+    autoIncrement: true
+  },
+  name: DataTypes.STRING,
+  correo: {
+    type: DataTypes.STRING,
+    unique: true
+  },
+  contrasena: {
+    type: DataTypes.STRING,
+    set(value) {
+      this.setDataValue('contrasena', bcrypt.hashSync(value, 10))
     }
-  }
-  Usuario.init({
-    name: DataTypes.STRING,
-    correo: DataTypes.STRING,
-    contrasena: DataTypes.STRING,
-    puntuacion: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Usuario',
-  });
-  return Usuario;
-};
+  },
+  puntuacion: DataTypes.INTEGER
+}, {
+  hooks: {
+    afterCreate: async (user, options) => {
+      const rol = await Rol.findOne({ where: { name: 'Usuario' } })
+      if (rol) {
+        await UsuarioRol.create({ idUsu: user.id, idRol: rol.id })
+      }
+      return Promise.resolve()
+    },
+    afterBulkCreate: async (users, options) => {
+      const rol = await Rol.findOne({ where: { name: 'Usuario' } })
+      if (rol) {
+        for (const user of users) {
+          await UsuarioRol.create({ idUsu: user.id, idRol: rol.id })
+        }
+      }
+      return Promise.resolve()
+    }
+  },
+  sequelize: db,
+  modelName: 'Usuario',
+  tableName: 'usuarios',
+  timestamps: true,
+  paranoid: true
+});
+
+
+export default Usuario;

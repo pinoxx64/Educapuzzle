@@ -1,24 +1,38 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class UsuarioRol extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+
+import { DataTypes, Model } from "sequelize";
+import db from '../database/Connection.js'
+
+class UsuarioRol extends Model {
+  static associate(models) { }
+}
+UsuarioRol.init({
+  id: {
+    type: DataTypes.BIGINT,
+    primaryKey: true,
+    allowNull: false,
+    unique: true,
+    autoIncrement: true
+  },
+  idUsu: {
+    type: DataTypes.BIGINT,
+    references: {
+      model: 'usuarios',
+      key: 'id'
+    }
+  },
+  idRol: {
+    type: DataTypes.BIGINT,
+    references: {
+      model: 'rols',
+      key: 'id'
     }
   }
-  UsuarioRol.init({
-    idUsu: DataTypes.INTEGER,
-    idRol: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'UsuarioRol',
-  });
-  return UsuarioRol;
-};
+}, {
+  sequelize: db,
+  modelName: 'UsuarioRol',
+  tableName: 'usuariorols',
+  timestamps: true
+})
+
+export default UsuarioRol;
