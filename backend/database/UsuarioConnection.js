@@ -262,3 +262,5 @@ class UsuarioConnection {
         }
     }
 }
+
+export { UsuarioConnection }
