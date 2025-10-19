@@ -3,7 +3,7 @@
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
         <label for="correo">Correo electronico</label>
         <input
-            type="correo"
+            type="email"
             id="correo"
             name="correo"
             [(ngModel)]="correo"
@@ -11,7 +11,7 @@
         /> 
         <label for="contrasena">Contraseña</label>
         <input
-            type="contrasena"
+            type="password"
             id="contrasena"
             name="contrasena"
             [(ngModel)]="contrasena"
@@ -21,6 +21,6 @@
     </form> 
         <!-- <a href="#">Forget Password<br> </a> -->
     <div class="text-center">
-        <p style="color: #59238F;">Registrate</p>
+        <a style="color: #59238F;" href="/registro">Registrate</a>
     </div>
 </div>

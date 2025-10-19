@@ -27,18 +27,21 @@ Usuario.init({
       this.setDataValue('contrasena', bcrypt.hashSync(value, 10))
     }
   },
-  puntuacion: DataTypes.INTEGER
+  puntuacion: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  }
 }, {
   hooks: {
     afterCreate: async (user, options) => {
-      const rol = await Rol.findOne({ where: { name: 'Usuario' } })
+      const rol = await Rol.findOne({ where: { nombre: 'Alumno' } })
       if (rol) {
         await UsuarioRol.create({ idUsu: user.id, idRol: rol.id })
       }
       return Promise.resolve()
     },
     afterBulkCreate: async (users, options) => {
-      const rol = await Rol.findOne({ where: { name: 'Usuario' } })
+      const rol = await Rol.findOne({ where: { nombre: 'Alumno' } })
       if (rol) {
         for (const user of users) {
           await UsuarioRol.create({ idUsu: user.id, idRol: rol.id })

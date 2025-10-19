@@ -9,7 +9,7 @@ Usuario.Rol = Usuario.hasMany(UsuarioRol, {as: 'roles', foreignKey: 'idUsu'});
 Rol.Usuario = Rol.hasMany(UsuarioRol, {as: 'usuarios', foreignKey: 'idRol'});
 
 //UsuarioRol
-UsuarioRol.Usuario = UsuarioRol.belongsTo(Usuario, {as: 'user', foreignKey: 'idUsu'})
+UsuarioRol.Usuario = UsuarioRol.belongsTo(Usuario, {as: 'usuario', foreignKey: 'idUsu'})
 UsuarioRol.Rol = UsuarioRol.belongsTo(Rol, {as: 'rol', foreignKey: 'idRol'})
 
 export {

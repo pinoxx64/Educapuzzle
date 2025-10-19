@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './registro.html',
   styleUrl: './registro.css'
 })
-export class Registro {
+export class RegistroComponent {
   name: string = ''
   correo: string = ''
   contrasena: string = ''

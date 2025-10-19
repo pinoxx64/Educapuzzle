@@ -136,3 +136,5 @@ const UsuarioController = {
             })
     }
 }
+
+export default UsuarioController

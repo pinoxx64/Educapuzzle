@@ -26,7 +26,7 @@ class UsuarioConnection {
             correo: usuario.correio,
             puntuacion: usuario.image,
             deletedAt: usuario.deletedAt,
-            roles: usuario.roles.map(rol => rol.rol.name)
+            roles: usuario.roles.map(rol => rol.rol.nombre)
         }))
 
         return users
@@ -54,7 +54,7 @@ class UsuarioConnection {
             correo: user.correio,
             puntuacion: user.image,
             deletedAt: user.deletedAt,
-            roles: user.roles.map(rol => rol.rol.name)
+            roles: user.roles.map(rol => rol.rol.nombre)
         }
 
         return user
@@ -68,7 +68,7 @@ class UsuarioConnection {
                 correo: correo
             },
             include: [{
-                model: UserRol,
+                model: UsuarioRol,
                 as: 'roles',
                 include: {
                     model: Rol,
@@ -85,7 +85,7 @@ class UsuarioConnection {
             correo: user.correo,
             puntuacion: user.puntuacion,
             deletedAt: user.deletedAt,
-            roles: user.roles.map(rol => rol.rol.name)
+            roles: user.roles.map(rol => rol.rol.nombre)
         }
 
         return user
@@ -123,7 +123,7 @@ class UsuarioConnection {
             correo: user.correo,
             puntuacion: user.puntuacion,
             deletedAt: user.deletedAt,
-            roles: user.roles.map(rol => rol.rol.name)
+            roles: user.roles.map(rol => rol.rol.nombre)
         }
         console.log(user)
         return user
@@ -141,7 +141,7 @@ class UsuarioConnection {
 
         if (roles && roles.length > 0) {
             for (const rolName of roles) {
-                const rol = await Rol.findOne({ where: { name: rolName } });
+                const rol = await Rol.findOne({ where: { nombre: rolName } });
                 if (rol) {
                     await UsuarioRol.create({
                         idUsu: user.id,
@@ -168,7 +168,7 @@ class UsuarioConnection {
             correo: userCreado.correo,
             puntuacion: userCreado.puntuacion,
             deletedAt: userCreado.deletedAt,
-            roles: userCreado.roles.map(rol => rol.rol.name)
+            roles: userCreado.roles.map(rol => rol.rol.nombre)
         }
     }
 
@@ -216,7 +216,7 @@ class UsuarioConnection {
         correo: userActualizado.correo,
         puntuacion: userActualizado.puntuacion,
         deletedAt: userActualizado.deletedAt,
-        roles: userActualizado.roles.map(rol => rol.rol.name)
+        roles: userActualizado.roles.map(rol => rol.rol.nombre)
     };
     }
 
