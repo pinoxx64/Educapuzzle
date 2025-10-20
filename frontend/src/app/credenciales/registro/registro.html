@@ -1,1 +1,33 @@
-<p>registro works!</p>
+<div class="login-container" style="background-color: grey;">
+    <h3>Registrarse</h3>
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+        <label for="name">Nombre</label>
+        <input
+            type="name"
+            id="name"
+            name="name"
+            [(ngModel)]="name"
+            required
+        /> 
+        <label for="correo">Correo electronico</label>
+        <input
+            type="correo"
+            id="correo"
+            name="correo"
+            [(ngModel)]="correo"
+            required
+        /> 
+        <label for="contrasena">Contraseña</label>
+        <input
+            type="contrasena"
+            id="contrasena"
+            name="contrasena"
+            [(ngModel)]="contrasena"
+            required
+        />
+        <button type="submit" style="color: white;" [disabled]="!loginForm.valid">Iniciar Sesión</button>
+    </form> 
+    <div class="text-center">
+        <a style="color: #59238F;" href="login">Inicia sesion</a>
+    </div>
+</div>

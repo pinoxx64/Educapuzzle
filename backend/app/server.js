@@ -3,7 +3,7 @@ import cors from 'cors'
 import { createServer } from 'http'
 //import { Server as SocketServer } from 'socket.io'
 
-// import { router as UserRoutes } from '../routes/UserRoutes.js'
+import { router as UsuarioRoutes } from '../routes/UsuarioRoutes.js'
 // import { router as SimulacionesRoutes } from '../routes/SimulacionesRoutes.js'
 // import { router as CeldaRoutes } from '../routes/CeldaRoutes.js'
 
@@ -16,7 +16,7 @@ class Server {
         this.serverHttp = createServer(this.app)
         //io = new SocketServer(this.serverHttp, { cors: { origin: '*' } })
 
-        // this.usersPath = '/api/user'
+        this.usuarioPath = '/api/usuario'
         // this.simulacionPath = '/api/simulacion'
         // this.celdaPath = '/api/celda'
 
@@ -31,7 +31,7 @@ class Server {
     }
 
     routes() {
-        // this.app.use(this.usersPath, UserRoutes)
+        this.app.use(this.usuarioPath, UsuarioRoutes)
         // this.app.use(this.simulacionPath, SimulacionesRoutes)
         // this.app.use(this.celdaPath, CeldaRoutes)
     }
