@@ -1,0 +1,16 @@
+export interface Usuario {
+    id: number,
+    name: string,
+    correo: string,
+    password: string,
+    puntuacion: number,
+    roles: string[],
+    deletedAt: any
+}
+
+export interface UsuarioResponse {
+  message: string,
+  status: number,
+  usuario: Usuario,
+  token: string
+}
