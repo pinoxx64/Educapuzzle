@@ -1,5 +1,5 @@
-<div class="login-container">
-    <h3>Inicia Sesión</h3>
+<div class="login-container" style="background-color: grey;">
+    <h3>Registrarse</h3>
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
         <label for="name">Nombre</label>
         <input
@@ -25,7 +25,7 @@
             [(ngModel)]="contrasena"
             required
         />
-        <button type="submit" style="color: black;" [disabled]="!loginForm.valid">Iniciar Sesión</button>
+        <button type="submit" style="color: white;" [disabled]="!loginForm.valid">Iniciar Sesión</button>
     </form> 
     <div class="text-center">
         <a style="color: #59238F;" href="login">Inicia sesion</a>

@@ -1,4 +1,4 @@
-<div class="login-container">
+<div class="login-container" style="background-color: grey;">
     <h3>Inicia Sesión</h3>
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
         <label for="correo">Correo electronico</label>
@@ -17,7 +17,7 @@
             [(ngModel)]="contrasena"
             required
         />
-        <button type="submit" style="color: black;" [disabled]="!loginForm.valid">Iniciar Sesión</button>
+        <button type="submit" style="color: white;" [disabled]="!loginForm.valid">Iniciar Sesión</button>
     </form> 
         <!-- <a href="#">Forget Password<br> </a> -->
     <div class="text-center">
