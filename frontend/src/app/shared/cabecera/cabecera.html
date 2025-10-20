@@ -1,1 +1,12 @@
-<p>cabecera works!</p>
+<div class="header-container">
+  <h1>EducaPuzzle</h1>
+  <nav>
+    <button pButton type="button" label="Inicio" icon="pi pi-home" (click)="inicio()" class="p-button-text"></button>
+    <button *ngIf="isAdmin" pButton type="button" label="Administrar Usuarios" icon="pi pi-users" (click)="gestionUser()" class="p-button-text"></button>
+    <button *ngIf="isProfesor" pButton type="button" label="Administrar Puzzles" icon="pi pi-palette" (click)="gestionPuzzle()" class="p-button-text"></button>
+    <button *ngIf="isProfesor" pButton type="button" label="Ver resolucion Puzzles" icon="pi pi-eye" (click)="verPuzzle()" class="p-button-text"></button>
+    <button *ngIf="isAlumno" pButton type="button" label="Resolver puzzle" icon="pi pi-play-circle" (click)="resolverPuzzle()" class="p-button-text"></button>
+    <button pButton type="button" label="Ranking" icon="pi pi-star-fill" (click)="ranking()" class="p-button-text"></button>
+    <button pButton type="button" label="Cerrar Sesión" icon="pi pi-sign-out" (click)="logout()" class="p-button-text"></button>
+  </nav>
+</div>
