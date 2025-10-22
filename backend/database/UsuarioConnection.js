@@ -92,10 +92,10 @@ class UsuarioConnection {
     }
 
     login = async (correo, contrasena) => {
-        let user = []
+        console.log("Dentro")
         console.log(correo, contrasena)
 
-        user = await Usuario.findOne({
+        const user = await Usuario.findOne({
             where: {
                 correo: correo
             },
@@ -108,16 +108,18 @@ class UsuarioConnection {
                 }
             }]
         })
-        console.log(user.contrasena)
+        console.log("Contraseña")
+        console.log(user)
 
         if (!user) throw new Error("No existe el usuario")
 
         const correctPassword = await bycrypt.compare(contrasena, user.contrasena)
+        console.log("correcta?")
         console.log(correctPassword)
-
         if (!correctPassword) throw new Error("Contraseña incorrecta")
+        console.log(user)
 
-        user = {
+        return {
             id: user.id,
             name: user.name,
             correo: user.correo,
@@ -125,8 +127,6 @@ class UsuarioConnection {
             deletedAt: user.deletedAt,
             roles: user.roles.map(rol => rol.rol.nombre)
         }
-        console.log(user)
-        return user
     }
 
     postUser = async (body) => {
