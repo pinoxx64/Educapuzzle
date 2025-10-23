@@ -1,11 +1,12 @@
-import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeuix/themes/aura';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { HttpClientModule } from '@angular/common/http';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { providePrimeNG } from 'primeng/config';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,9 +15,9 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(HttpClientModule, ButtonModule, TableModule),
     provideAnimationsAsync(),
     providePrimeNG({
-        theme: {
-            preset: 'aura'
-        }
+      theme: {
+        preset: Aura
+      }
     })
   ]
 };
