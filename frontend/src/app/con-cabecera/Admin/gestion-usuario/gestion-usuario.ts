@@ -16,7 +16,7 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
     ButtonModule,
     TableModule,
     ConfirmPopupModule,
-    //EditarRolUsuario, 
+    EditarRolUsuario, 
     EditarUsuario],
   providers: [ConfirmationService],
   templateUrl: './gestion-usuario.html',
