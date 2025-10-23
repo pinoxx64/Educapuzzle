@@ -15,9 +15,9 @@
           (click)="abrirDialogoEditar(usuario)"></button>
         <button *ngIf="usuario.deletedAt == null" pButton type="button" label="Eliminar" severity="danger"
           icon="pi pi-trash" class="p-button-text" (click)="softdeleteUsuarios($event, usuario.id)"></button>
-        <button *ngIf="usuario.deletedAt != null" pButton type="button" label="Añadir" icon="pi pi-usuario-plus"
+        <button *ngIf="usuario.deletedAt != null" pButton type="button" label="Añadir" icon="pi pi-plus"
           class="p-button-success p-button-text" (click)="activarUsuarios($event, usuario.id)"></button>
-        <button pButton type="button" label="Editar roles" icon="pi pi-usuarios" class="p-button-text"
+        <button pButton type="button" label="Editar roles" icon="pi pi-user" class="p-button-text"
           (click)="abrirDialogoRoles(usuario)"></button>
       </td>
     </tr>

@@ -53,6 +53,13 @@ export class EditarRolUsuario implements OnChanges{
     this.rolesSeleccionados = this.roles
       .filter(rol => this.rolesChecked[rol.nombre])
       .map(rol => rol.nombre);
+
+    console.log(this.rolesSeleccionados.length);
+    if (this.rolesSeleccionados.length === 0) {
+      this.rolesSeleccionados = ['Alumno'];
+      this.rolesChecked['Alumno'] = true;
+    }
+
     this.onSave.emit(this.rolesSeleccionados);
   }
 
