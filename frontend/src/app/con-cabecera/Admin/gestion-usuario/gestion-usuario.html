@@ -1,0 +1,41 @@
+<p-table [value]="usuarios" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Nombre</th>
+      <th>Email</th>
+      <th>Acciones</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-usuario>
+    <tr>
+      <td>{{ usuario.name }}</td>
+      <td>{{ usuario.correo }}</td>
+      <td>
+        <button pButton type="button" label="Editar" severity="info" icon="pi pi-pencil" class="p-button-text"
+          (click)="abrirDialogoEditar(usuario)"></button>
+        <button *ngIf="usuario.deletedAt == null" pButton type="button" label="Eliminar" severity="danger"
+          icon="pi pi-trash" class="p-button-text" (click)="softdeleteUsuarios($event, usuario.id)"></button>
+        <button *ngIf="usuario.deletedAt != null" pButton type="button" label="Añadir" icon="pi pi-usuario-plus"
+          class="p-button-success p-button-text" (click)="activarUsuarios($event, usuario.id)"></button>
+        <button pButton type="button" label="Editar roles" icon="pi pi-usuarios" class="p-button-text"
+          (click)="abrirDialogoRoles(usuario)"></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<!-- <app-editar-rol-usuario
+  [visible]="dialogRolesVisible"
+  [usuarioRoles]="rolesEditarUsuario"
+  (onClose)="cerrarDialogoRoles()"
+  (onSave)="guardarRolesEditados($event)">
+</app-editar-rol-usuario> -->
+
+<p-confirmpopup></p-confirmpopup>
+
+<app-editar-usuario 
+    [visible]="dialogEditarVisible" 
+    [usu]="usuarioAEditar" 
+    [onClose]="cerrarDialogoEditar" 
+    [onSave]="guardarUsuarioEditado">
+</app-editar-usuario>

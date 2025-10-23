@@ -2,7 +2,7 @@ export interface Usuario {
     id: number,
     name: string,
     correo: string,
-    password: string,
+    contrasena: string,
     puntuacion: number,
     roles: string[],
     deletedAt: any
