@@ -1,0 +1,16 @@
+<p-dialog header="Editar Usuario" [(visible)]="visible" [modal]="true" [style]="{width: '600px'}" (onHide)="onClose()">
+  <form (ngSubmit)="save()" *ngIf="usu">
+    <div class="p-field">
+        <label for="email">Correo actual:</label>
+        <input id="correo" type="correo" pInputText [(ngModel)]="correo" name="correo" required class="input-grande" />
+    </div>
+    <div class="p-field" style="margin-top:1rem;">
+      <label for="password">Nueva contraseña:</label>
+      <p-password id="contrasena" [(ngModel)]="contrasena" name="contrasena" class="input-grande" />
+    </div>
+    <div style="margin-top:2rem; text-align:right;">
+      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="onClose()"></button>
+      <button pButton type="submit" label="Guardar" class="p-button-success" style="margin-left:1rem;"></button>
+    </div>
+  </form>
+</p-dialog>

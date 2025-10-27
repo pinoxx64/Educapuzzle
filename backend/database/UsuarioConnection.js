@@ -23,8 +23,8 @@ class UsuarioConnection {
         users = users.map(usuario => ({
             id: usuario.id,
             name: usuario.name,
-            correo: usuario.correio,
-            puntuacion: usuario.image,
+            correo: usuario.correo,
+            puntuacion: usuario.puntuacion,
             deletedAt: usuario.deletedAt,
             roles: usuario.roles.map(rol => rol.rol.nombre)
         }))
@@ -51,8 +51,8 @@ class UsuarioConnection {
         user = {
             id: user.id,
             name: user.name,
-            correo: user.correio,
-            puntuacion: user.image,
+            correo: user.correo,
+            puntuacion: user.puntuacion,
             deletedAt: user.deletedAt,
             roles: user.roles.map(rol => rol.rol.nombre)
         }
@@ -92,10 +92,10 @@ class UsuarioConnection {
     }
 
     login = async (correo, contrasena) => {
-        let user = []
+        console.log("Dentro")
         console.log(correo, contrasena)
 
-        user = await Usuario.findOne({
+        const user = await Usuario.findOne({
             where: {
                 correo: correo
             },
@@ -108,16 +108,18 @@ class UsuarioConnection {
                 }
             }]
         })
-        console.log(user.contrasena)
+        console.log("Contraseña")
+        console.log(user)
 
         if (!user) throw new Error("No existe el usuario")
 
         const correctPassword = await bycrypt.compare(contrasena, user.contrasena)
+        console.log("correcta?")
         console.log(correctPassword)
-
         if (!correctPassword) throw new Error("Contraseña incorrecta")
+        console.log(user)
 
-        user = {
+        return {
             id: user.id,
             name: user.name,
             correo: user.correo,
@@ -125,8 +127,6 @@ class UsuarioConnection {
             deletedAt: user.deletedAt,
             roles: user.roles.map(rol => rol.rol.nombre)
         }
-        console.log(user)
-        return user
     }
 
     postUser = async (body) => {
@@ -173,7 +173,8 @@ class UsuarioConnection {
     }
 
     putUser = async (id, body) => {
-        await User.update({
+        console.log(body)
+        await Usuario.update({
             name: body.name,
             correo: body.correo,
             puntuacion: body.puntuacion,
@@ -186,7 +187,7 @@ class UsuarioConnection {
         await UsuarioRol.destroy({ where: { idUsu: id } });
 
         for (const rolName of body.roles) {
-            const rol = await Rol.findOne({ where: { name: rolName } });
+            const rol = await Rol.findOne({ where: { nombre: rolName } });
             if (rol) {
                 await UsuarioRol.create({
                     idUsu: id,
