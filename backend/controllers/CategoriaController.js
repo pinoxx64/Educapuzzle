@@ -24,7 +24,7 @@ const CategoriaController = {
             .then(categoria => {
                 res.status(200).json({
                     status: 200,
-                    message: "Usuario obtenido correctamente",
+                    message: "Categoria obtenido correctamente",
                     categoria: categoria
                 })
             })
@@ -40,7 +40,7 @@ const CategoriaController = {
             .then(categoria => {
                 res.status(200).json({
                     status: 200,
-                    message: "Usuario creado correctamente",
+                    message: "Categoria creado correctamente",
                     categoria: categoria
                 })
             })
@@ -56,7 +56,7 @@ const CategoriaController = {
             .then(categoria => {
                 res.status(200).json({
                     status: 200,
-                    message: "Usuario actualizado correctamente",
+                    message: "Categoria actualizado correctamente",
                     categoria: categoria
                 })
             })
@@ -72,7 +72,7 @@ const CategoriaController = {
             .then(Categoria => {
                 res.status(200).json({
                     status: 200,
-                    message: "Usuario eliminado correctamente",
+                    message: "Categoria eliminado correctamente",
                     Categoria: Categoria
                 })
             })

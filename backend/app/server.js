@@ -4,9 +4,7 @@ import { createServer } from 'http'
 //import { Server as SocketServer } from 'socket.io'
 
 import { router as UsuarioRoutes } from '../routes/UsuarioRoutes.js'
-// import { router as SimulacionesRoutes } from '../routes/SimulacionesRoutes.js'
-// import { router as CeldaRoutes } from '../routes/CeldaRoutes.js'
-
+import { router as CategoriaRoutes } from '../routes/CategoriaRoutes.js'
 //let io;
 
 class Server {
@@ -17,8 +15,7 @@ class Server {
         //io = new SocketServer(this.serverHttp, { cors: { origin: '*' } })
 
         this.usuarioPath = '/api/usuario'
-        // this.simulacionPath = '/api/simulacion'
-        // this.celdaPath = '/api/celda'
+        this.categoriaPath = '/api/categoria'
 
         this.middlewares()
         this.routes()
@@ -32,7 +29,7 @@ class Server {
 
     routes() {
         this.app.use(this.usuarioPath, UsuarioRoutes)
-        // this.app.use(this.simulacionPath, SimulacionesRoutes)
+        this.app.use(this.categoriaPath, CategoriaRoutes)
         // this.app.use(this.celdaPath, CeldaRoutes)
     }
 
