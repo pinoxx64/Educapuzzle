@@ -11,9 +11,15 @@
       <td>
         <button pButton type="button" label="Editar" severity="info" icon="pi pi-pencil" class="p-button-text"
           (click)="abrirEditarCategoria(categorias)"></button>
-        <button *ngIf="categorias.deletedAt == null" pButton type="button" label="Eliminar" severity="danger"
+        <button pButton type="button" label="Eliminar" severity="danger"
           icon="pi pi-trash" class="p-button-text" (click)="deleteCategorias($event, categorias.id)"></button>
       </td>
     </tr>
   </ng-template>
 </p-table>
+
+<!-- <app-editar-categoria
+  [visible]="dialogEditarVisible"
+  [categoria]="categoriaAEditar"
+  (onClose)="cerrarEditarCategoria($event)"
+></app-editar-categoria> -->

@@ -6,6 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './editar-categoria.html',
   styleUrl: './editar-categoria.css'
 })
-export class EditarCategoria {
+export class EditarCategoriaComponent {
 
 }

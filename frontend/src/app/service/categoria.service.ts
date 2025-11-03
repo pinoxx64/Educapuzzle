@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 import { Categoria, CategoriaResponse } from '../interface/categoria';
+import { Puzzle } from '../interface/puzzle';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,14 @@ export class CategoriaService {
     const headers = new HttpHeaders().set('token', token || '');
     return this.http.get<{ categorias: Categoria }>(`${environment.categoriaUrl}/${id}`, { headers }).pipe(
       map(response => response.categorias || [])
+    )
+  }
+
+  getPuzzle(): Observable<Puzzle[]> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('token', token || '');
+    return this.http.get<{ puzzles: Puzzle[] }>(`${environment.categoriaUrl}/puzzles`, { headers }).pipe(
+      map(response => response.puzzles || [])
     )
   }
 

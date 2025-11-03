@@ -1,4 +1,4 @@
-import { CategoriaConnection } from "../database/CategoriaConnection";
+import { CategoriaConnection } from "../database/CategoriaConnection.js";
 
 const conn = new CategoriaConnection()
 
@@ -35,6 +35,23 @@ const CategoriaController = {
                 })
             })
     },
+    funGetPuzzles: (req, res) => {
+        conn.getPuzzles(req.params.id)
+            .then(puzzle => {
+                res.status(200).json({
+                    status: 200,
+                    message: "puzzle obtenido correctamente",
+                    puzzle: puzzle
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    status: 500,
+                    message: err.message
+                })
+            })
+    },
+
     funPostCategoria: (req, res) => {
         conn.postCategoria(req.body)
             .then(categoria => {

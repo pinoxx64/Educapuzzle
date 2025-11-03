@@ -1,4 +1,5 @@
 import {Caregoria, Usuario, Puzzle} from "../models/association.js";
+import { Op, where } from 'sequelize'
 
 class CategoriaConnection {
     getCategorias = async() => {
@@ -47,6 +48,19 @@ class CategoriaConnection {
         }
 
         return categorias
+    }
+
+    getPuzzles = async() => {
+        let puzzles = []
+        puzzles = await Puzzle.findAll()
+
+        if (!puzzles) throw new Error("No hay puzzles")
+        puzzles = puzzles.map(puzzle => ({
+            id: puzzle.id,
+            nombre: puzzle.nombre
+        }))
+
+        return puzzles
     }
 
     postCategoria = async(categoria) => {

@@ -1,0 +1,85 @@
+import {Objeto, Categoria} from "../models/association.js";
+import { Op, where } from 'sequelize'
+
+class ObjetoConnection {
+    getObjetos = async() => {
+        let objetos = []
+        objetos = await Objeto.findAll({
+            include: [{
+                model: Categoria,
+                as: 'categoria'
+            }]
+        })
+
+        if (!objetos) throw new Error("No hay objetos")
+
+        objetos = objetos.map(obj => ({
+            id: obj.id,
+            nombre: obj.nombre,
+            idCategoria: obj.idCategoria
+        }))
+
+        return objetos
+    }
+
+    getObjeto = async(id) => {
+        let objeto = await Objeto.findOne({
+            where: { id },
+            include: [{
+                model: Categoria,
+                as: 'categoria'
+            }]
+        })
+
+        if (!objeto) throw new Error("No existe el objeto")
+
+        return {
+            id: objeto.id,
+            nombre: objeto.nombre,
+            idCategoria: objeto.idCategoria
+        }
+    }
+
+    postObjeto = async(objeto) => {
+        const { nombre, idCategoria } = objeto
+        const newObjeto = await Objeto.create({
+            nombre,
+            idCategoria
+        })
+
+        if (!newObjeto) throw new Error("No se pudo crear el objeto")
+
+        return {
+            id: newObjeto.id,
+            nombre: newObjeto.nombre,
+            idCategoria: newObjeto.idCategoria
+        }
+    }
+
+    putObjeto = async(id, objeto) => {
+        await Objeto.update({
+            nombre: objeto.nombre,
+            idCategoria: objeto.idCategoria
+        },{
+            where: { id }
+        })
+
+        const objetoActualizado = await Objeto.findOne({ where: { id } })
+        if (!objetoActualizado) throw new Error("No se pudo actualizar el objeto")
+
+        return {
+            id: objetoActualizado.id,
+            nombre: objetoActualizado.nombre,
+            idCategoria: objetoActualizado.idCategoria
+        }
+    }
+
+    deleteObjeto = async(id) => {
+        const objetoEliminado = await Objeto.destroy({ where: { id } })
+        if (!objetoEliminado) throw new Error("No se pudo eliminar el objeto")
+
+        return 'Objeto eliminado correctamente'
+    }
+}
+
+export {ObjetoConnection}

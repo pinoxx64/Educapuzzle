@@ -4,7 +4,8 @@ const { fakerES } = require('@faker-js/faker')
 const usuarios = async () => {
     const users = []
     for (let i = 0; i < 10; i++) {
-        const password = await bycrypt.hash('password', 10)
+        const password = 'password' //await bycrypt.hash('password', 10)
+        console.log(password);
         if (i == 0){
             users.push({
                 name: fakerES.person.firstName(),
@@ -31,7 +32,7 @@ const usuarios = async () => {
             });
         }
     }
-
+    console.log(users)
     return users
 }
 

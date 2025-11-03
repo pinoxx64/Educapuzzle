@@ -10,7 +10,6 @@ import db from '../database/Connection.js'
     sequelize:db,
     modelName: 'Puzzle',
     tableName: 'puzzles',
-    timestamps: true,
-    paranoid: true
+    timestamps: true
   });
 export default Puzzle;
