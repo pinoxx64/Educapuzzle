@@ -5,6 +5,10 @@ import { createServer } from 'http'
 
 import { router as UsuarioRoutes } from '../routes/UsuarioRoutes.js'
 import { router as CategoriaRoutes } from '../routes/CategoriaRoutes.js'
+import { router as ObjetoRoutes } from '../routes/ObjetoRoutes.js'
+import { router as CaracteristicaRoutes } from '../routes/CaracteristicasRoutes.js'
+import { router as ObjetoCaracteristicaRoutes } from '../routes/ObjetoCaracteristicaRoutes.js'
+
 //let io;
 
 class Server {
@@ -16,6 +20,9 @@ class Server {
 
         this.usuarioPath = '/api/usuario'
         this.categoriaPath = '/api/categoria'
+        this.objetoPath = '/api/objeto'
+        this.caracteristicaPath = '/api/caracteristica'
+        this.objetoCaracteristicaPath = '/api/objetocaracteristica'
 
         this.middlewares()
         this.routes()
@@ -30,7 +37,9 @@ class Server {
     routes() {
         this.app.use(this.usuarioPath, UsuarioRoutes)
         this.app.use(this.categoriaPath, CategoriaRoutes)
-        // this.app.use(this.celdaPath, CeldaRoutes)
+        this.app.use(this.objetoPath, ObjetoRoutes)
+        this.app.use(this.caracteristicaPath, CaracteristicaRoutes)
+        this.app.use(this.objetoCaracteristicaPath, ObjetoCaracteristicaRoutes)
     }
 
     // sockets() {
