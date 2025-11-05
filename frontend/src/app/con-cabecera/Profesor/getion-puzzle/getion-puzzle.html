@@ -13,13 +13,24 @@
           (click)="abrirEditarCategoria(categorias)"></button>
         <button pButton type="button" label="Eliminar" severity="danger"
           icon="pi pi-trash" class="p-button-text" (click)="deleteCategorias($event, categorias.id)"></button>
+        <button pButton type="button" label="Objetos" severity="info"
+          icon="pi pi-clipboard" class="p-button-text" (click)="abrirVerObj()"></button>
+        <button pButton type="button" label="Caracteristicas" severity="help"
+          icon="pi pi-palette" class="p-button-text" (click)="abrirVerCarac()"></button>
       </td>
     </tr>
   </ng-template>
 </p-table>
 
-<!-- <app-editar-categoria
+<app-editar-categoria
   [visible]="dialogEditarVisible"
   [categoria]="categoriaAEditar"
-  (onClose)="cerrarEditarCategoria($event)"
-></app-editar-categoria> -->
+  (onClose)="cerrarEditarCategoria()"
+  (onSave)="guardarEdicionCategoria()"
+></app-editar-categoria>
+
+<app-crear-categoria
+  [visible]="dialogCrearVisible"
+  (onClose)="cerrarCrearCategoria()"
+  (onSave)="guardarNuevaCategoria($any($event))"
+></app-crear-categoria>

@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { Categoria } from '../../../../interface/categoria';
+import { Caracteristica } from '../../../../interface/caracteristica';
 
 @Component({
-  selector: 'app-crear-categoria',
+  selector: 'app-crear-caracteristica',
   imports: [
     DialogModule,
     FormsModule,
@@ -15,21 +15,21 @@ import { Categoria } from '../../../../interface/categoria';
     ButtonModule,
     InputTextModule
   ],
-  templateUrl: './crear-categoria.html',
-  styleUrl: './crear-categoria.css'
+  templateUrl: './crear-caracteristica.html',
+  styleUrl: './crear-caracteristica.css'
 })
-export class CrearCategoriaComponent {
+export class CrearCaracteristicaComponent {
   @Input() visible: boolean = false;
-  @Input() categoria: Categoria | null = null;
+  @Input() caracteristica: Caracteristica | null = null;
   @Input() onClose: () => void = () => {};
-  @Input() onSave: (categoria: Partial<Categoria>) => void = () => {};
+  @Input() onSave: (caracteristica: Partial<Caracteristica>) => void = () => {};
 
   nombre: string = ''
 
   save() {
-    if (this.categoria) {
+    if (this.caracteristica) {
       this.onSave({
-        id: this.categoria.id,
+        id: this.caracteristica.id,
         nombre: this.nombre
       });
     }

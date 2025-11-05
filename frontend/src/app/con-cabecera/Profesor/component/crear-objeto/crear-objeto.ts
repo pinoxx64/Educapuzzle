@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { Categoria } from '../../../../interface/categoria';
+import { Objeto } from '../../../../interface/objeto';
 
 @Component({
-  selector: 'app-crear-categoria',
+  selector: 'app-crear-objeto',
   imports: [
     DialogModule,
     FormsModule,
@@ -15,21 +15,21 @@ import { Categoria } from '../../../../interface/categoria';
     ButtonModule,
     InputTextModule
   ],
-  templateUrl: './crear-categoria.html',
-  styleUrl: './crear-categoria.css'
+  templateUrl: './crear-objeto.html',
+  styleUrl: './crear-objeto.css'
 })
-export class CrearCategoriaComponent {
+export class CrearObjetoComponent {
   @Input() visible: boolean = false;
-  @Input() categoria: Categoria | null = null;
+  @Input() objeto: Objeto | null = null;
   @Input() onClose: () => void = () => {};
-  @Input() onSave: (categoria: Partial<Categoria>) => void = () => {};
+  @Input() onSave: (objeto: Partial<Objeto>) => void = () => {};
 
   nombre: string = ''
 
   save() {
-    if (this.categoria) {
+    if (this.objeto) {
       this.onSave({
-        id: this.categoria.id,
+        id: this.objeto.id,
         nombre: this.nombre
       });
     }
