@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -16,22 +16,41 @@ import { Categoria } from '../../../../interface/categoria';
     InputTextModule
   ],
   templateUrl: './crear-categoria.html',
-  styleUrl: './crear-categoria.css'
+  styleUrls: ['./crear-categoria.css']
 })
 export class CrearCategoriaComponent {
   @Input() visible: boolean = false;
-  @Input() categoria: Categoria | null = null;
-  @Input() onClose: () => void = () => {};
-  @Input() onSave: (categoria: Partial<Categoria>) => void = () => {};
+  @Output() onClose = new EventEmitter<void>();
 
-  nombre: string = ''
+  @Output() onSave = new EventEmitter<Partial<Categoria>>();
 
-  save() {
-    if (this.categoria) {
-      this.onSave({
-        id: this.categoria.id,
-        nombre: this.nombre
-      });
-    }
+  nombre: string = '';
+
+  handleClose() {
+    this.nombre = '';
+    this.onClose.emit();
   }
+
+save() {
+  if (!this.nombre || this.nombre.trim() === '') return;
+
+  const userStr = sessionStorage.getItem('user');
+  let idCreador = null;
+
+  if (userStr) {
+    const userParsed = JSON.parse(userStr);
+    idCreador = userParsed.user.id;
+  }
+
+  const nuevo: Partial<Categoria> = {
+    nombre: this.nombre.trim(),
+    idPuzzle: 1,
+    idCreador: idCreador
+  };
+
+  this.onSave.emit(nuevo);
+
+  this.nombre = '';
+  this.onClose.emit();
+}
 }

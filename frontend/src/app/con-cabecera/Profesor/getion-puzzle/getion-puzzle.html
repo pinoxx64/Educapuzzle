@@ -1,3 +1,6 @@
+<button pButton type="button" label="Crear" severity="success" icon="pi pi-plus" class="p-button-text"
+  (click)="abrirCrearCategoria()"></button>
+
 <p-table [value]="categorias" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
   <ng-template pTemplate="header">
     <tr>
@@ -5,32 +8,43 @@
       <th>Acciones</th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-categorias>
+
+  <p-confirmpopup></p-confirmpopup>
+  <ng-template pTemplate="body" let-categoria>
     <tr>
-      <td>{{ categorias.nombre }}</td>
+      <td>{{ categoria.nombre }}</td>
       <td>
-        <button pButton type="button" label="Editar" severity="info" icon="pi pi-pencil" class="p-button-text"
-          (click)="abrirEditarCategoria(categorias)"></button>
-        <button pButton type="button" label="Eliminar" severity="danger"
-          icon="pi pi-trash" class="p-button-text" (click)="deleteCategorias($event, categorias.id)"></button>
-        <button pButton type="button" label="Objetos" severity="info"
-          icon="pi pi-clipboard" class="p-button-text" (click)="abrirVerObj()"></button>
-        <button pButton type="button" label="Caracteristicas" severity="help"
-          icon="pi pi-palette" class="p-button-text" (click)="abrirVerCarac()"></button>
+        <button pButton type="button" label="Editar" severity="success" icon="pi pi-pencil"
+         (click)="abrirEditarCategoria(categoria)"></button>
+
+        <button pButton type="button" label="Eliminar" severity="danger" icon="pi pi-trash" class="p-button-text"
+          (click)="deleteCategorias($event, categoria.id)"></button>
+
+        <button pButton type="button" label="Objetos" severity="info" icon="pi pi-clipboard" class="p-button-text"
+          (click)="abrirVerObj(categoria)"></button>
+
+        <button pButton type="button" label="Caracteristicas" severity="help" icon="pi pi-palette" class="p-button-text"
+          (click)="abrirVerCarac(categoria)"></button>
       </td>
     </tr>
   </ng-template>
 </p-table>
 
-<app-editar-categoria
-  [visible]="dialogEditarVisible"
-  [categoria]="categoriaAEditar"
+<app-editar-categoria 
+  [visible]="dialogEditarVisible" 
+  [categoria]="categoriaAEditar" 
   (onClose)="cerrarEditarCategoria()"
-  (onSave)="guardarEdicionCategoria()"
+  (onSave)="guardarEdicionCategoria($event)"
 ></app-editar-categoria>
 
 <app-crear-categoria
   [visible]="dialogCrearVisible"
   (onClose)="cerrarCrearCategoria()"
-  (onSave)="guardarNuevaCategoria($any($event))"
-></app-crear-categoria>
+  (onSave)="guardarNuevaCategoria($event)">
+</app-crear-categoria>
+
+<app-ver-objetos
+  [visible]="dialogObjVisible"
+  [categoria]="categoriaObj"
+  (onClose)="cerrarVerObj()">
+</app-ver-objetos>

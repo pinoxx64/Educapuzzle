@@ -1,9 +1,9 @@
 'use strict';
-import { caracteristica } from '../factories/CaracteristicaFactory.js'
+const { caracteristicas } = require('../factories/CaracteristicaFactory.cjs')
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    const caracteristicasDefault = await caracteristica()
+    const caracteristicasDefault = await caracteristicas()
     await queryInterface.bulkInsert('caracteristicas', caracteristicasDefault, {})
   },
 

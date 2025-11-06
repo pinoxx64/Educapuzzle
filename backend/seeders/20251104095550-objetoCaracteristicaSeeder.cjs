@@ -1,14 +1,14 @@
 'use strict';
-const { objetoCaracteristica } = require('../factories/ObjetoCaracteristicaFactory.js')
+const { objetosCaracteristicas } = require('../factories/ObjetoCaracteristicaFactory.cjs')
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    const objetoCaracteristicasDefault = await objetoCaracteristica()
-    await queryInterface.bulkInsert('objetocaracteristica', objetoCaracteristicasDefault, {})
+    const objetoCaracteristicasDefault = await objetosCaracteristicas()
+    await queryInterface.bulkInsert('objetocaracteristicas', objetoCaracteristicasDefault, {})
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('objetocaracteristica', null, {})
+    await queryInterface.bulkDelete('objetocaracteristicas', null, {})
   }
 };

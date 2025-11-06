@@ -5,6 +5,9 @@ import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 import { Objeto, ObjetoResponse } from '../interface/objeto';
 
+import { tap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,16 +28,24 @@ export class ObjetoService {
       .pipe(map(resp => resp.objeto));
   }
 
-  postObjeto(body: { nombre: string, idCategoria: number }): Observable<ObjetoResponse> {
+  getObjetosPorCategoria(idCategoria: number) {
     const token = sessionStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('token', token);
-    return this.http.post<ObjetoResponse>(`${environment.objetoUrl}/`, body, { headers });
+    const url = `${environment.objetoUrl}/categoria/${idCategoria}`;
+    return this.http.get<any>(url, { headers }).pipe(
+      tap(resp =>  resp))
   }
 
-  putObjeto(id: number, body: { nombre?: string, idCategoria?: number }): Observable<ObjetoResponse> {
+  postObjeto(body: any): Observable<HttpResponse<Objeto>> {
     const token = sessionStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('token', token);
-    return this.http.put<ObjetoResponse>(`${environment.objetoUrl}/${id}`, body, { headers });
+    return this.http.post<Objeto>(`${environment.objetoUrl}/`, body, { headers, observe: 'response' });
+  }
+
+  putObjeto(objeto: Objeto): Observable<ObjetoResponse> {
+    const token = sessionStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('token', token);
+    return this.http.put<ObjetoResponse>(`${environment.objetoUrl}/${objeto.id}`, objeto, { headers });
   }
 
   deleteObjeto(id: number): Observable<HttpResponse<any>> {

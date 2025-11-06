@@ -37,6 +37,23 @@ const ObjetoController = {
       })
   },
 
+  funGetObjetoPorIdCategoria: (req, res) => {
+    conn.getObjetosPorCategoria(req.params.idCategoria)
+      .then(objeto => {
+        res.status(200).json({
+          status: 200,
+          message: "Objeto obtenido correctamente",
+          objeto
+        })
+      })
+      .catch(err => {
+        res.status(500).json({
+          status: 500,
+          message: err.message
+        })
+      })
+  },
+
   funPostObjeto: (req, res) => {
     conn.postObjeto(req.body)
       .then(objeto => {

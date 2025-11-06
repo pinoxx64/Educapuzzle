@@ -1,4 +1,4 @@
-import { Objeto, Caracteristica, ObjetoCaracteristicas } from "../models/association.js";
+import { Objeto, Caracteristicas, ObjetoCaracteristicas } from "../models/association.js";
 import { Op, where } from 'sequelize'
 
 class ObjetoCaracteristicasConnection {

@@ -19,8 +19,8 @@ Objeto.init({
   nombre: DataTypes.STRING
 }, {
   sequelize: db,
-  modelName: 'Objeto',
-  tableName: 'objeto',
+  modelName: 'Objetos',
+  tableName: 'objetos',
   timestamps: true
 });
 export default Objeto;

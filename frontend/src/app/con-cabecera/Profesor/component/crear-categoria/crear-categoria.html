@@ -1,12 +1,12 @@
-<p-dialog header="Crear categoría" [(visible)]="visible" [modal]="true" [style]="{width: '600px'}" (onHide)="onClose()">
+<p-dialog header="Crear categoría" [(visible)]="visible" [modal]="true" [style]="{width: '600px'}" (onHide)="handleClose()">
   <form (ngSubmit)="save()">
     <div class="p-field">
       <label for="nombre">Nombre:</label>
       <input id="nombre" type="text" pInputText [(ngModel)]="nombre" name="nombre" required class="input-grande" />
     </div>
     <div style="margin-top:2rem; text-align:right;">
-      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="onClose()"></button>
-      <button pButton type="submit" label="Guardar" class="p-button-success" style="margin-left:1rem;" [disabled]="!nombre"></button>
+      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="handleClose()"></button>
+      <button pButton type="submit" label="Guardar" class="p-button-success" style="margin-left:1rem;"></button>
     </div>
   </form>
 </p-dialog>

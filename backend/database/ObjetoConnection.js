@@ -40,6 +40,25 @@ class ObjetoConnection {
         }
     }
 
+    getObjetosPorCategoria = async(idCategoria) => {
+        let objetos = []
+        objetos = await Objeto.findAll({
+            where: { idCategoria },
+            include: [{
+                model: Categoria,
+                as: 'categoria'
+            }]
+        })
+
+        if (!objetos) throw new Error("No hay objetos para esta categoria")
+
+        return objetos.map(obj => ({
+            id: obj.id,
+            nombre: obj.nombre,
+            idCategoria: obj.idCategoria
+        }))
+    }
+
     postObjeto = async(objeto) => {
         const { nombre, idCategoria } = objeto
         const newObjeto = await Objeto.create({

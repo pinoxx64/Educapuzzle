@@ -37,13 +37,17 @@ export class CategoriaService {
   }
 
   putCategoria(categoria: Categoria): Observable<HttpResponse<Categoria>> {
+    console.log(categoria)
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('token', token || '');
-    return this.http.put<Categoria>(`${environment.usuarioUrl}/${categoria.id}`, categoria, { headers, observe: 'response' });
+    return this.http.put<Categoria>(`${environment.categoriaUrl}/${categoria.id}`, categoria, { headers, observe: 'response' });
   }
 
-  postCategoria(body: any): Observable<Categoria> {
-    return this.http.post<Categoria>(`${environment.categoriaUrl}/`, body)
+  postCategoria(body: any): Observable<HttpResponse<Categoria>> {
+    console.log(body)
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('token', token || '');
+    return this.http.post<Categoria>(`${environment.categoriaUrl}/`, body, { headers, observe: 'response' })
   }
 
   deleteCategoria(id: number): Observable<HttpResponse<any>> {

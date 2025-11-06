@@ -1,1 +1,74 @@
-<p>ver-objetos works!</p>
+<!-- <p-dialog>
+    <button pButton type="button" label="Crear" severity="success" icon="pi pi-plus" class="p-button-text"
+  (click)="abrirCrearObj()"></button>
+
+<p-table [value]="objetos" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+    <ng-template pTemplate="header">
+        <tr>
+        <th>Nombre</th>
+        <th>Acciones</th>
+        </tr>
+    </ng-template>
+    <p-confirmpopup></p-confirmpopup>
+    <ng-template pTemplate="body" let-objeto>
+        <tr>
+        <td>{{ objeto.nombre }}</td>
+        <td>{{ objeto.descripcion }}</td>
+        <td>
+            <button pButton type="button" label="Editar" severity="info" icon="pi pi-pencil"
+            (click)="abrirEditarObj(objeto)"></button>
+
+            <button pButton type="button" label="Eliminar" severity="danger" icon="pi pi-trash" class="p-button-text"
+            (click)="deleteObj($event, objeto.id)"></button>
+        </td>
+        </tr>
+    </ng-template>
+</p-table>
+</p-dialog> -->
+<!-- Dialog principal que controla visibilidad desde el padre -->
+<p-dialog header="Objetos de la categoría" [(visible)]="visible" (onHide)="handleHide()" [modal]="true" [style]="{width: '800px'}">
+  <div class="p-d-flex p-jc-between p-ai-center" style="margin-bottom: 1rem;">
+    <h3 style="margin:0;">Objetos ({{ categoria?.nombre || 'Sin categoría' }})</h3>
+    <button pButton type="button" label="Crear" icon="pi pi-plus" (click)="abrirCrearObj()"></button>
+  </div>
+
+  <!-- necesaria para confirm popup de eliminar -->
+  <p-confirmpopup></p-confirmpopup>
+
+  <!-- Tabla con objetos -->
+  <p-table [value]="objetos" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Id</th>
+        <th>Nombre</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-objeto>
+      <tr>
+        <td>{{ objeto.id }}</td>
+        <td>{{ objeto.nombre }}</td>
+        <td>
+          <button pButton type="button" label="Editar" icon="pi pi-pencil" (click)="abrirEditarObj(objeto)"></button>
+          <button pButton type="button" label="Eliminar" severity="danger" icon="pi pi-trash" class="p-button-text"
+            (click)="deleteObj($event, objeto.id)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Componentes hijos dentro del diálogo (modales internos) -->
+  <!-- <app-crear-objeto
+    [visible]="dialogCrearVisible"
+    (onClose)="cerrarCrearObj()"
+    (onSave)="guardarNuevaObjeto($event)">
+  </app-crear-objeto>
+
+  <app-editar-objeto
+    [visible]="dialogEditarVisible"
+    [objeto]="objetoAEditar"
+    (onClose)="cerrarEditarObj()"
+    (onSave)="guardarEdicionObjeto($event)">
+  </app-editar-objeto> -->
+</p-dialog>

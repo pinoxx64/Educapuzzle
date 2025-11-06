@@ -5,10 +5,10 @@ const {categorias} = require('../factories/CategoriaFactory.cjs')
 module.exports = {
   async up (queryInterface, Sequelize) {
     const categoriasDefault = await categorias()
-    await queryInterface.bulkInsert('categorias', categoriasDefault, {})
+    await queryInterface.bulkInsert('categoria', categoriasDefault, {})
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('categorias', null, {})
+    await queryInterface.bulkDelete('categoria', null, {})
   }
 };

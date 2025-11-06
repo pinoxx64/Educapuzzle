@@ -1,10 +1,10 @@
-import {Caregoria, Usuario, Puzzle} from "../models/association.js";
+import {Categoria, Usuario, Puzzle} from "../models/association.js";
 import { Op, where } from 'sequelize'
 
 class CategoriaConnection {
     getCategorias = async() => {
         let categorias = []
-        categorias = await Caregoria.findAll({
+        categorias = await Categoria.findAll({
             include: [{
                 model: Puzzle,
                 as: 'puzzle'
@@ -28,7 +28,7 @@ class CategoriaConnection {
 
     getCategoria = async(id) => {
         let categorias = []
-        categorias = await Caregoria.findOne({
+        categorias = await Categoria.findOne({
             include: [{
                 model: Puzzle,
                 as: 'puzzle'
@@ -65,7 +65,7 @@ class CategoriaConnection {
 
     postCategoria = async(categoria) => {
         const {nombre, idCreador, idPuzzle} = categoria
-        const newCategoria = await Caregoria.create({
+        const newCategoria = await Categoria.create({
             nombre,
             idCreador,
             idPuzzle
@@ -82,20 +82,20 @@ class CategoriaConnection {
     }
 
     putCategoria = async(id, categoria) => {
-        await Caregoria.update({
+        await Categoria.update({
             nombre: categoria.nombre
         },{
             where: { id }
         })
 
-        const categoriaActualizada = await Caregoria.findOne({ where: { id } })
+        const categoriaActualizada = await Categoria.findOne({ where: { id } })
         if (!categoriaActualizada) throw new Error("No se pudo actualizar la categoria")
 
         return categoriaActualizada
     }   
 
     deleteCategoria = async(id) => {
-        const categoriaEliminada = await Caregoria.destroy({ where: { id } })
+        const categoriaEliminada = await Categoria.destroy({ where: { id } })
         if (!categoriaEliminada) throw new Error("No se pudo eliminar la categoria")
 
         return 'Categoria eliminada correctamente'

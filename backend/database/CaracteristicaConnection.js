@@ -1,8 +1,8 @@
-import { Caracteristica, Categoria } from '../models/association.js';
+import { Caracteristicas, Categoria } from '../models/association.js';
 
 class CaracteristicaConnection {
   getCaracteristicas = async () => {
-    const caracteristicas = await Caracteristica.findAll({
+    const caracteristicas = await Caracteristicas.findAll({
       include: [{
         model: Categoria,
         as: 'categoria'
@@ -19,7 +19,7 @@ class CaracteristicaConnection {
   }
 
   getCaracteristica = async (id) => {
-    const caracteristica = await Caracteristica.findOne({
+    const caracteristica = await Caracteristicas.findOne({
       where: { id },
       include: [{
         model: Categoria,
@@ -39,7 +39,7 @@ class CaracteristicaConnection {
   postCaracteristica = async (caracteristica) => {
     const { nombre, idCategoria } = caracteristica;
 
-    const nueva = await Caracteristica.create({
+    const nueva = await Caracteristicas.create({
       nombre,
       idCategoria
     });
@@ -54,14 +54,14 @@ class CaracteristicaConnection {
   }
 
   putCaracteristica = async (id, caracteristica) => {
-    await Caracteristica.update({
+    await Caracteristicas.update({
       nombre: caracteristica.nombre,
       idCategoria: caracteristica.idCategoria
     }, {
       where: { id }
     });
 
-    const actualizada = await Caracteristica.findOne({ where: { id } });
+    const actualizada = await Caracteristicas.findOne({ where: { id } });
     if (!actualizada) throw new Error('No se pudo actualizar la caracteristica');
 
     return {
@@ -72,10 +72,10 @@ class CaracteristicaConnection {
   }
 
   deleteCaracteristica = async (id) => {
-    const eliminada = await Caracteristica.destroy({ where: { id } });
+    const eliminada = await Caracteristicas.destroy({ where: { id } });
     if (!eliminada) throw new Error('No se pudo eliminar la caracteristica');
 
-    return 'Caracteristica eliminada correctamente';
+    return 'Caracteristicas eliminada correctamente';
   }
 }
 
