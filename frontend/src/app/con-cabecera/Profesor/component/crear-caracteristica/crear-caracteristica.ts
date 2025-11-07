@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -20,18 +20,31 @@ import { Caracteristica } from '../../../../interface/caracteristica';
 })
 export class CrearCaracteristicaComponent {
   @Input() visible: boolean = false;
-  @Input() caracteristica: Caracteristica | null = null;
-  @Input() onClose: () => void = () => {};
-  @Input() onSave: (caracteristica: Partial<Caracteristica>) => void = () => {};
+  @Input() idCategoria?: number;
+  @Output() onClose = new EventEmitter<void>();
+  @Output() onSave = new EventEmitter<Partial<Caracteristica>>();
 
-  nombre: string = ''
+  nombre: string = '';
+
+  handleClose() {
+    this.nombre = '';
+    this.onClose.emit();
+  }
 
   save() {
-    if (this.caracteristica) {
-      this.onSave({
-        id: this.caracteristica.id,
-        nombre: this.nombre
-      });
+    if (!this.nombre || this.nombre.trim() === '') return;
+
+    const nuevo: Partial<Caracteristica> = {
+      nombre: this.nombre.trim()
+    };
+
+    if (this.idCategoria != null) {
+      nuevo.idCategoria = this.idCategoria;
     }
+
+    this.onSave.emit(nuevo);
+
+    this.nombre = '';
+    this.onClose.emit();
   }
 }

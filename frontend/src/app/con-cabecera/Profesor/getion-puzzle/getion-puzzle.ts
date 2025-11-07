@@ -13,6 +13,7 @@ import { EditarCategoriaComponent } from '../component/editar-categoria/editar-c
 import { CrearCategoriaComponent } from '../component/crear-categoria/crear-categoria';
 import { BehaviorSubject } from 'rxjs';
 import { VerObjetosComponent } from "../component/ver-objetos/ver-objetos";
+import { VerCaracteristicasComponent } from '../component/ver-caracteristicas/ver-caracteristicas';
 
 @Component({
   selector: 'app-getion-puzzle',
@@ -26,7 +27,8 @@ import { VerObjetosComponent } from "../component/ver-objetos/ver-objetos";
     FormsModule,
     EditarCategoriaComponent,
     CrearCategoriaComponent,
-    VerObjetosComponent
+    VerObjetosComponent,
+    VerCaracteristicasComponent
 ],
   providers: [ConfirmationService],
   templateUrl: './getion-puzzle.html',
@@ -149,4 +151,5 @@ export class GetionPuzzleComponent {
     this.dialogCaracVisible = false;
     this.categoriaCarac = null;
   }
+
 }

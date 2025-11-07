@@ -36,6 +36,14 @@ export class ObjetoService {
       tap(resp =>  resp))
   }
 
+  getCaracteristicasPorObjeto(idObjeto: number) {
+    const token = sessionStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('token', token);
+    const url = `${environment.objetoUrl}/caracteristicas/${idObjeto}`;
+    return this.http.get<any>(url, { headers }).pipe(
+      tap(resp =>  resp))
+  }
+
   postObjeto(body: any): Observable<HttpResponse<Objeto>> {
     const token = sessionStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('token', token);

@@ -1,8 +1,8 @@
-import {Objeto, Categoria} from "../models/association.js";
+import { Objeto, Categoria, Caracteristicas, ObjetoCaracteristicas } from "../models/association.js";
 import { Op, where } from 'sequelize'
 
 class ObjetoConnection {
-    getObjetos = async() => {
+    getObjetos = async () => {
         let objetos = []
         objetos = await Objeto.findAll({
             include: [{
@@ -21,8 +21,29 @@ class ObjetoConnection {
 
         return objetos
     }
+    
+    getCaracteristicasPorObjeto = async (idObjeto) => {
+        const objeto = await Objeto.findOne({ where: { id: idObjeto } })
+        if (!objeto) throw new Error("No existe el objeto")
 
-    getObjeto = async(id) => {
+        const relaciones = await ObjetoCaracteristicas.findAll({
+            where: { idObjetos: idObjeto }
+        })
+        if (!relaciones || relaciones.length === 0) return []
+
+        const idsCaracteristicas = relaciones.map(r => r.idCaracteristica)
+        const caracteristicas = await Caracteristicas.findAll({
+            where: { id: idsCaracteristicas }
+        })
+
+        return caracteristicas.map(c => ({
+            id: c.id,
+            nombre: c.nombre,
+            idCategoria: c.idCategoria
+        }))
+    }
+
+    getObjeto = async (id) => {
         let objeto = await Objeto.findOne({
             where: { id },
             include: [{
@@ -40,7 +61,7 @@ class ObjetoConnection {
         }
     }
 
-    getObjetosPorCategoria = async(idCategoria) => {
+    getObjetosPorCategoria = async (idCategoria) => {
         let objetos = []
         objetos = await Objeto.findAll({
             where: { idCategoria },
@@ -59,7 +80,7 @@ class ObjetoConnection {
         }))
     }
 
-    postObjeto = async(objeto) => {
+    postObjeto = async (objeto) => {
         const { nombre, idCategoria } = objeto
         const newObjeto = await Objeto.create({
             nombre,
@@ -75,11 +96,11 @@ class ObjetoConnection {
         }
     }
 
-    putObjeto = async(id, objeto) => {
+    putObjeto = async (id, objeto) => {
         await Objeto.update({
             nombre: objeto.nombre,
             idCategoria: objeto.idCategoria
-        },{
+        }, {
             where: { id }
         })
 
@@ -93,7 +114,7 @@ class ObjetoConnection {
         }
     }
 
-    deleteObjeto = async(id) => {
+    deleteObjeto = async (id) => {
         const objetoEliminado = await Objeto.destroy({ where: { id } })
         if (!objetoEliminado) throw new Error("No se pudo eliminar el objeto")
 
@@ -101,4 +122,4 @@ class ObjetoConnection {
     }
 }
 
-export {ObjetoConnection}
+export { ObjetoConnection }

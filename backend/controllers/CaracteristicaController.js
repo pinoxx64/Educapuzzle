@@ -37,6 +37,23 @@ const CaracteristicaController = {
       })
   },
 
+  funGetCaracteristicaPorIdCategoria: (req, res) => {
+    conn.getCaracteristicaPorIdCategoria(req.params.idCategoria)
+      .then(caracteristica => {
+        res.status(200).json({
+          status: 200,
+          message: "Caracteristica obtenida correctamente",
+          caracteristica
+        })
+      })
+      .catch(err => {
+        res.status(500).json({
+          status: 500,
+          message: err.message
+        })
+      })
+  },
+
   funPostCaracteristica: (req, res) => {
     conn.postCaracteristica(req.body)
       .then(caracteristica => {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,7 @@ import { Objeto } from '../../../../interface/objeto';
 
 @Component({
   selector: 'app-crear-objeto',
+  standalone: true,
   imports: [
     DialogModule,
     FormsModule,
@@ -16,22 +17,35 @@ import { Objeto } from '../../../../interface/objeto';
     InputTextModule
   ],
   templateUrl: './crear-objeto.html',
-  styleUrl: './crear-objeto.css'
+  styleUrls: ['./crear-objeto.css']
 })
 export class CrearObjetoComponent {
   @Input() visible: boolean = false;
-  @Input() objeto: Objeto | null = null;
-  @Input() onClose: () => void = () => {};
-  @Input() onSave: (objeto: Partial<Objeto>) => void = () => {};
+  @Input() idCategoria?: number;
+  @Output() onClose = new EventEmitter<void>();
+  @Output() onSave = new EventEmitter<Partial<Objeto>>();
 
-  nombre: string = ''
+  nombre: string = '';
+
+  handleClose() {
+    this.nombre = '';
+    this.onClose.emit();
+  }
 
   save() {
-    if (this.objeto) {
-      this.onSave({
-        id: this.objeto.id,
-        nombre: this.nombre
-      });
+    if (!this.nombre || this.nombre.trim() === '') return;
+
+    const nuevo: Partial<Objeto> = {
+      nombre: this.nombre.trim()
+    };
+
+    if (this.idCategoria != null) {
+      nuevo.idCategoria = this.idCategoria;
     }
+
+    this.onSave.emit(nuevo);
+
+    this.nombre = '';
+    this.onClose.emit();
   }
 }

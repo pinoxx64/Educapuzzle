@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Caracteristica, CaracteristicaResponse } from '../interface/caracteristica';
-
+import { tap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
@@ -25,16 +25,24 @@ export class CaracteristicaService {
       .pipe(map(resp => resp.caracteristica));
   }
 
-  postCaracteristica(body: { nombre: string, idCategoria: number }): Observable<CaracteristicaResponse> {
+  getCaracteristicasPorCategoria(idCategria: number) {
+    const token = sessionStorage.getItem('token') || '';
+    const headers = new HttpHeaders().set('token', token);
+    const url = `${environment.caracteristicaUrl}/categoria/${idCategria}`;
+    return this.http.get<any>(url, { headers }).pipe(
+      tap(resp =>  resp))
+  }
+
+  postCaracteristica(body: any): Observable<CaracteristicaResponse> {
     const token = sessionStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('token', token);
     return this.http.post<CaracteristicaResponse>(`${environment.caracteristicaUrl}/`, body, { headers });
   }
 
-  putCaracteristica(id: number, body: { nombre?: string, idCategoria?: number }): Observable<CaracteristicaResponse> {
+  putCaracteristica(carac: Caracteristica): Observable<CaracteristicaResponse> {
     const token = sessionStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('token', token);
-    return this.http.put<CaracteristicaResponse>(`${environment.caracteristicaUrl}/${id}`, body, { headers });
+    return this.http.put<CaracteristicaResponse>(`${environment.caracteristicaUrl}/${carac.id}`, carac, { headers });
   }
 
   deleteCaracteristica(id: number): Observable<HttpResponse<any>> {

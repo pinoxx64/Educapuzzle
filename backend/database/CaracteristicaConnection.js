@@ -36,6 +36,25 @@ class CaracteristicaConnection {
     };
   }
 
+  getCaracteristicaPorIdCategoria = async (idCategoria) => {
+        let caracteristicas = []
+        caracteristicas = await Caracteristicas.findAll({
+            where: { idCategoria },
+            include: [{
+                model: Categoria,
+                as: 'categoria'
+            }]
+        })
+
+        if (!caracteristicas) throw new Error("No hay caracteristicas para esta categoria")
+
+        return caracteristicas.map(carac => ({
+            id: carac.id,
+            nombre: carac.nombre,
+            idCategoria: carac.idCategoria
+        }))
+  }
+
   postCaracteristica = async (caracteristica) => {
     const { nombre, idCategoria } = caracteristica;
 

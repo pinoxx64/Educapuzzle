@@ -20,11 +20,13 @@
         <button pButton type="button" label="Eliminar" severity="danger" icon="pi pi-trash" class="p-button-text"
           (click)="deleteCategorias($event, categoria.id)"></button>
 
-        <button pButton type="button" label="Objetos" severity="info" icon="pi pi-clipboard" class="p-button-text"
+        <button pButton type="button" label="Objetos" severity="info" icon="pi pi-eye" class="p-button-text"
           (click)="abrirVerObj(categoria)"></button>
 
         <button pButton type="button" label="Caracteristicas" severity="help" icon="pi pi-palette" class="p-button-text"
           (click)="abrirVerCarac(categoria)"></button>
+
+        <button pButton type="button" label="Test" severity="warn" icon="pi pi-angle-right" class="p-button-text"></button>
       </td>
     </tr>
   </ng-template>
@@ -48,3 +50,10 @@
   [categoria]="categoriaObj"
   (onClose)="cerrarVerObj()">
 </app-ver-objetos>
+
+<app-ver-caracteristicas
+  [visible]="dialogCaracVisible"
+  [categoria]="categoriaCarac"
+  (visibleChange)="dialogCaracVisible = $event"
+  (onClose)="cerrarVerCarac()">
+</app-ver-caracteristicas>

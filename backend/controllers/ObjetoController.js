@@ -54,6 +54,24 @@ const ObjetoController = {
       })
   },
 
+    funGetCaracteristicasPorObjeto: (req, res) => {
+    conn.getCaracteristicasPorObjeto(req.params.idObjeto)
+      .then(objeto => {
+        res.status(200).json({
+          status: 200,
+          message: "Objeto obtenido correctamente",
+          objeto
+        })
+      })
+      .catch(err => {
+        res.status(500).json({
+          status: 500,
+          message: err.message
+        })
+      })
+  },
+  
+
   funPostObjeto: (req, res) => {
     conn.postObjeto(req.body)
       .then(objeto => {

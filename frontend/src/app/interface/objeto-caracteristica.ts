@@ -1,5 +1,5 @@
 export interface ObjetoCaracteristica {
-    id: number,
+    id?: number,
     idObjeto: number,
     idCaracteristica: number
 }

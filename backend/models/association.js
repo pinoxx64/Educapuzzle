@@ -25,19 +25,19 @@ Puzzle.Categoria = Puzzle.hasMany(Categoria, {as: 'categoria', foreignKey: 'idPu
 Categoria.Puzzle = Categoria.belongsTo(Puzzle, {as: 'puzzle', foreignKey: 'idPuzzle'});
 Categoria.Usuario = Categoria.belongsTo(Usuario, {as: 'usuarios', foreignKey: 'idCreador'});
 Categoria.Objeto = Categoria.hasMany(Objeto, {as: 'objeto', foreignKey: 'idCategoria'});
-Categoria.Caracteristica = Categoria.hasMany(Objeto, {as: 'caracteristica', foreignKey: 'idCategoria'});
+Categoria.Caracteristica = Categoria.hasMany(Objeto, {as: 'caracteristicas', foreignKey: 'idCategoria'});
 
 //Objeto
-Objeto.Categoria = Objeto.belongsTo(Categoria, {as: 'categoria', foreignKey: 'idCategoria'});
-Objeto.Caracteristica = Objeto.hasMany(Caracteristicas, {as: 'caracteristica', foreignKey: 'idObjeto'});
+Objeto.Categoria = Objeto.hasMany(Categoria, {as: 'categoria', foreignKey: 'id'});
+Objeto.Caracteristica = Objeto.hasMany(ObjetoCaracteristicas, {as: 'caracteristicas', foreignKey: 'idObjetos'});
 
 //Caracteristica
-Caracteristicas.Categoria = Caracteristicas.belongsTo(Categoria, {as: 'categoria', foreignKey: 'idCategoria'});
-Caracteristicas.Objeto = Caracteristicas.belongsTo(Objeto, {as: 'objeto', foreignKey: 'idCaracteristica'});
+Caracteristicas.Categoria = Caracteristicas.hasMany(Categoria, {as: 'categoria', foreignKey: 'id'});
+Caracteristicas.Objeto = Caracteristicas.hasMany(ObjetoCaracteristicas, {as: 'objeto', foreignKey: 'idCaracteristica'});
 
 //ObjetoCaracteristica
-ObjetoCaracteristicas.Objeto = ObjetoCaracteristicas.belongsTo(Objeto, {as: 'objeto', foreignKey: 'idObjeto'});
-ObjetoCaracteristicas.Caracteristica = ObjetoCaracteristicas.belongsTo(Caracteristicas, {as: 'caracteristica', foreignKey: 'idCaracteristica'});
+ObjetoCaracteristicas.Objeto = ObjetoCaracteristicas.belongsTo(Objeto, {as: 'objeto', foreignKey: 'idObjetos'});
+ObjetoCaracteristicas.Caracteristica = ObjetoCaracteristicas.belongsTo(Caracteristicas, {as: 'caracteristicas', foreignKey: 'idCaracteristica'});
 
 export {
     Usuario,
