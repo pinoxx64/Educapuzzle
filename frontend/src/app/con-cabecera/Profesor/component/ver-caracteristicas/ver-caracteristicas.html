@@ -1,0 +1,41 @@
+<p-dialog header="Caracteristicas de la categoría" [(visible)]="visible" (onHide)="handleHide()" [modal]="true" [style]="{width: '800px'}">
+  <div class="p-d-flex p-jc-between p-ai-center" style="margin-bottom: 1rem;">
+    <h3 style="margin:0;">Caracteristicas ({{ categoria?.nombre || 'Sin categoría' }})</h3>
+    <button pButton type="button" label="Crear" icon="pi pi-plus" (click)="abrirCrearCaracteristica()"></button>
+  </div>
+  <p-confirmpopup></p-confirmpopup>
+
+  <p-table [value]="caracteristicas" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nombre</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-caracteristica>
+      <tr>
+        <td>{{ caracteristica.nombre }}</td>
+        <td>
+          <button pButton type="button" label="Editar" icon="pi pi-pencil" (click)="abrirEditarCaracteristica(caracteristica)"></button>
+          <button pButton type="button" label="Eliminar" severity="danger" icon="pi pi-trash" class="p-button-text"
+            (click)="deleteCarac($event, caracteristica.id)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <app-crear-caracteristica
+    [visible]="dialogCrearVisible"
+    [idCategoria]="categoria?.id"
+    (onClose)="cerrarCrearCaracteristica()"
+    (onSave)="guardarNuevaCaracteristica($event)">
+  </app-crear-caracteristica>
+
+  <app-editar-caracteristica
+    [visible]="dialogEditarVisible"
+    [caracteristica]="caracteristicaAEditar"
+    (onClose)="cerrarEditarCaracteristica()"
+    (onSave)="guardarEdicionCaracteristica($event)">
+  </app-editar-caracteristica>
+</p-dialog>

@@ -1,0 +1,41 @@
+<p-dialog header="Editar Objeto" [(visible)]="visible" [modal]="true" [style]="{width: '700px'}" (onHide)="cerrar()">
+  <div class="p-fluid">
+    <div class="p-field">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" type="text" pInputText [(ngModel)]="nombre" name="nombre" required />
+    </div>
+
+    <hr />
+
+    <div>
+      <label>Características</label>
+
+      <div *ngFor="let sel of caracteristicasSeleccionadas; let i = index; trackBy: trackByUid" class="p-d-flex p-ai-center" style="gap:0.5rem; margin-bottom:0.5rem;">
+<p-select
+  [options]="allCaracteristicas"
+  optionLabel="nombre"
+  optionValue="id"
+  [(ngModel)]="caracteristicasSeleccionadas[i].idCaracteristica"
+  name="carac-{{i}}"
+  placeholder="Selecciona una característica"
+  style="width:100%"
+  ></p-select>
+        <button pButton type="button" icon="pi pi-trash" class="p-button-danger" (click)="borrarCaracteristica(i)"
+                [disabled]="!puedeBorrar(i)" style="margin-left:6px;"></button>
+      </div>
+
+      <div style="text-align:right; margin-top:0.5rem;">
+        <button pButton type="button" label="Añadir característica" icon="pi pi-plus" class="p-button-success" (click)="agregarCaracteristica()"></button>
+      </div>
+
+      <div *ngIf="erMensaje" class="p-mt-2" style="color:#a94442; font-weight:600;">
+        {{ erMensaje }}
+      </div>
+    </div>
+
+    <div style="text-align:right; margin-top:1rem;">
+      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="cerrar()"></button>
+      <button pButton type="button" label="Guardar" class="p-button-success" style="margin-left:1rem;" (click)="save()"></button>
+    </div>
+  </div>
+</p-dialog>
