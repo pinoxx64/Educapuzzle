@@ -100,6 +100,23 @@ const CategoriaController = {
                 })
             })
     },
+
+    funComprobarSiEsFuncional: (req, res) => {
+        conn.comprobarSiEsFuncional(req.params.id)
+            .then(Categoria => {
+                res.status(200).json({
+                    status: 200,
+                    message: "Categoria funciona correctamente",
+                    Categoria: Categoria
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    status: 500,
+                    message: err.message
+                })
+            })
+    },
 }
 
 export default CategoriaController
