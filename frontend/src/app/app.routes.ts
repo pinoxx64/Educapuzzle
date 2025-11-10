@@ -6,6 +6,8 @@ import { conCabeceraComponent } from './con-cabecera/con-cabecera';
 import { InicioComponent } from './con-cabecera/inicio/inicio';
 import { GestionUsuarioComponent } from './con-cabecera/Admin/gestion-usuario/gestion-usuario';
 import { AdminGuard } from './guards/admin.guard';
+import { GetionPuzzleComponent } from './con-cabecera/Profesor/getion-puzzle/getion-puzzle';
+import { ProfeGuard } from './guards/profe.guard';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent},
@@ -15,7 +17,7 @@ export const routes: Routes = [
         children: [
             { path: 'inicio', component: InicioComponent, canActivate: [AuthGuard] },
             { path: 'gestionUser', component: GestionUsuarioComponent, canActivate: [AdminGuard, AuthGuard] },
-            // { path: 'gestionPuzzle', component: GestionPuzzleComponent, canActivate: [ProfeGuard, AuthGuard] },
+            { path: 'gestionPuzzle', component: GetionPuzzleComponent, canActivate: [ProfeGuard, AuthGuard] },
             // { path: 'verPuzzle', component: VerPuzzleComponent, canActivate: [ProfeGuard, AuthGuard] },
             // { path: 'resolverPuzzle', component: ResolverPuzzleComponent, canActivate: [AuthGuard] },
             // { path: 'ranking', component: RankingComponent}

@@ -1,26 +1,15 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import { DataTypes, Model } from "sequelize";
+import db from '../database/Connection.js'
   class Puzzle extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
+    static associate(models) {}
   }
   Puzzle.init({
     nombre: DataTypes.STRING
   }, {
-    sequelize,
+    sequelize:db,
     modelName: 'Puzzle',
     tableName: 'puzzles',
-    timestamps: true,
-    paranoid: true
+    timestamps: true
   });
-  return Puzzle;
-};
+export default Puzzle;

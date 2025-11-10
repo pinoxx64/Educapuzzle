@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn } from '@angular/router';
 
-import { profeGuard } from './profe-guard';
+import { ProfeGuard } from './profe.guard';
 
 describe('profeGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) => 

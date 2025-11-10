@@ -1,10 +1,10 @@
-import {Usuario, Rol, UsuarioRol} from '../models/association.js'
+import { Usuario, Rol, UsuarioRol } from '../models/association.js'
 import bycrypt from 'bcrypt'
 import { Op, where } from 'sequelize'
 
 class UsuarioConnection {
     getUsers = async () => {
-                let users = []
+        let users = []
 
         users = await Usuario.findAll({
             paranoid: false,
@@ -179,46 +179,46 @@ class UsuarioConnection {
             correo: body.correo,
             puntuacion: body.puntuacion,
             contrasena: body.contrasena
-    }, {
-        where: { id }
-    });
+        }, {
+            where: { id }
+        });
 
-    if (body.roles && Array.isArray(body.roles)) {
-        await UsuarioRol.destroy({ where: { idUsu: id } });
+        if (body.roles && Array.isArray(body.roles)) {
+            await UsuarioRol.destroy({ where: { idUsu: id } });
 
-        for (const rolName of body.roles) {
-            const rol = await Rol.findOne({ where: { nombre: rolName } });
-            if (rol) {
-                await UsuarioRol.create({
-                    idUsu: id,
-                    idRol: rol.id,
-                });
+            for (const rolName of body.roles) {
+                const rol = await Rol.findOne({ where: { nombre: rolName } });
+                if (rol) {
+                    await UsuarioRol.create({
+                        idUsu: id,
+                        idRol: rol.id,
+                    });
+                }
             }
         }
-    }
 
-    const userActualizado = await Usuario.findByPk(id, {
-        include: [{
-            model: UsuarioRol,
-            as: 'roles',
-            include: {
-                model: Rol,
-                as: 'rol'
-            }
-        }]
-    });
+        const userActualizado = await Usuario.findByPk(id, {
+            include: [{
+                model: UsuarioRol,
+                as: 'roles',
+                include: {
+                    model: Rol,
+                    as: 'rol'
+                }
+            }]
+        });
 
-    console.log(userActualizado)
-    if (!userActualizado) throw new Error('No se ha podido modificar el usuario.');
+        console.log(userActualizado)
+        if (!userActualizado) throw new Error('No se ha podido modificar el usuario.');
 
-    return {
-        id: userActualizado.id,
-        name: userActualizado.name,
-        correo: userActualizado.correo,
-        puntuacion: userActualizado.puntuacion,
-        deletedAt: userActualizado.deletedAt,
-        roles: userActualizado.roles.map(rol => rol.rol.nombre)
-    };
+        return {
+            id: userActualizado.id,
+            name: userActualizado.name,
+            correo: userActualizado.correo,
+            puntuacion: userActualizado.puntuacion,
+            deletedAt: userActualizado.deletedAt,
+            roles: userActualizado.roles.map(rol => rol.rol.nombre)
+        };
     }
 
     softDeleteUser = async (id) => {
