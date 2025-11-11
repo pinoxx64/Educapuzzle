@@ -117,6 +117,23 @@ const CategoriaController = {
                 })
             })
     },
+
+    funCrearSudoku: (req, res) => {
+        conn.crearSudoku(req.params.id)
+            .then(Categoria => {
+                res.status(200).json({
+                    status: 200,
+                    message: "Sudoku creado correctamente",
+                    Categoria: Categoria
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    status: 500,
+                    message: err.message
+                })
+            })
+    },
 }
 
 export default CategoriaController
