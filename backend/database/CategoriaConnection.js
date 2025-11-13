@@ -248,12 +248,13 @@ class CategoriaConnection {
             else {
                 //voy a buscar los objetos que menos carac tengan
                 console.log('Los objetos de la caracteristica ', objCaracPeq)
+                //esto se puede hacer una funcio con contCaracPON
                 let contCaracOCP = Array(objCaracPeq.length).fill(0)
                 objetos.forEach(obj => {
                     const intermedias = obj.objetoCaracteristicas
                     intermedias.forEach(oc => {
                         for (let i = 0; i < objCaracPeq.length; i++) {
-                            if (oc.idCaracteristica == objCaracPeq[i]) {
+                            if (oc.idObjetos == objCaracPeq[i]) {
                                 contCaracOCP[i]++
                             }
                         }
@@ -324,7 +325,7 @@ class CategoriaConnection {
             console.log(caracF)
             console.log(tabla)
 
-            //escoger los 2 mejores objetos de esa segunda caracteristica
+            //escoger los 2 mejores objetos de esa segunda caracteristica y los colocamos
             let posiblesObjNuevos = []
             objetos.forEach(obj => {
                 const intermedias = obj.objetoCaracteristicas
@@ -335,17 +336,215 @@ class CategoriaConnection {
                 });
 
             });
-            console.log(posiblesObjNuevos)//Tengo que seguir por aqui
+            console.log('posiblesObjNuevos', posiblesObjNuevos)
 
-            //busca las 2 mejores caracteristicas donde las otras caracteristicas del los nuevos objetos coincida mejor con los que ya existe
+            if (posiblesObjNuevos.length < 2) throw new Error("Hay un error a la hora de colocar los objetos de la 2º caracteristica elegida");
+            else if (posiblesObjNuevos.length == 2) {
+                for (let i = 0; i < tabla.length; i++) {
+                    if (tabla[i] == elegidoId) {
+                        tabla[i + 1] = posiblesObjNuevos[0]
+                        tabla[i + 2] = posiblesObjNuevos[1]
+                    }
+                }
+            } else {
+                //voy a buscar las compatibilidad que tinen las caracteristicas de los objetos posibles con los ya existentes
 
-            //rellena con los objetos que quedan teniendo las carac
+                //1º guarderé las carac de los ya existentes
+                let objElecSinElec = objElec
+                objElecSinElec = objElecSinElec.filter(oe => oe !== elegidoId)
+                console.log('objElecSinElec', objElecSinElec)
+
+                let caracOESE1 = []
+                objetos.forEach(obj => {
+                    if (obj.id == objElecSinElec[0]) {
+                        const intermedias = obj.objetoCaracteristicas
+                        intermedias.forEach(oc => {
+                            if (oc.idCaracteristica != caracC[0] && oc.idCaracteristica != caracF[0] && oc.idCaracteristica != caracF[1] && oc.idCaracteristica != caracF[2]) {
+                                caracOESE1.push(oc.idCaracteristica)
+                            }
+                        });
+                    }
+                });
+
+                let caracOESE2 = []
+                objetos.forEach(obj => {
+                    if (obj.id == objElecSinElec[1]) {
+                        const intermedias = obj.objetoCaracteristicas
+                        intermedias.forEach(oc => {
+                            if (oc.idCaracteristica != caracC[0] && oc.idCaracteristica != caracF[0] && oc.idCaracteristica != caracF[1] && oc.idCaracteristica != caracF[2]) {
+                                caracOESE2.push(oc.idCaracteristica)
+                            }
+                        });
+                    }
+                });
+
+                console.log('caracOESE1', caracOESE1)
+                console.log('caracOESE2', caracOESE2)
+
+                console.log(posicionfila1)
+
+                //2º buscar el obj nueva y poner las carac
+                objetos.forEach(obj => {
+                    const intermedias = obj.objetoCaracteristicas
+                    for (let i = 0; i < posiblesObjNuevos.length; i++) {
+                        if (obj.id == posiblesObjNuevos[i]) {
+                            let caracSinUsadas = []
+                            intermedias.forEach(oc => {
+                                if (oc.idObjetos == 5) {
+                                    console.log('del 5', oc.idCaracteristica)
+                                }
+                                if (oc.idObjetos == posiblesObjNuevos[i] && oc.idCaracteristica != caracF[0] && oc.idCaracteristica != caracF[1] && oc.idCaracteristica != caracF[2] && oc.idCaracteristica != caracC[0]) {
+                                    caracSinUsadas.push(oc.idCaracteristica)
+                                }
+                            })
+                            console.log(posiblesObjNuevos[i])
+                            console.log(caracSinUsadas)
+                            caracSinUsadas.forEach(csu => {
+                                for (let j = 0; j < caracOESE1.length; j++) {
+                                    for (let l = 0; l < caracOESE2.length; l++) {
+                                        if ((csu != caracOESE1[j]) && (csu != caracOESE2[l])) {
+                                            tabla[posicionfila1 + 1] = posiblesObjNuevos[i] //Quiero poner que este numero y sus carac se eligan random pero por el momento lo dejaré así
+                                            caracC[1] = csu
+                                            if (posicionfila1 == 0) {
+                                                caracF[1] = caracOESE1[j]
+                                                caracF[2] = caracOESE2[l]
+                                            } else if (posicionfila1 == 3) {
+                                                caracF[0] = caracOESE1[j]
+                                                caracF[2] = caracOESE2[l]
+                                            } else if (posicionfila1 == 6) {
+                                                caracF[0] = caracOESE1[j]
+                                                caracF[1] = caracOESE2[l]
+                                            }
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                    }
+                })
+                console.log('caracC', caracC)
+                console.log('caracF', caracF)
+                console.log('tabla', tabla)
+
+                objetos.forEach(obj => {
+                    const intermedias = obj.objetoCaracteristicas
+                    intermedias.forEach(oc => {
+                        if (oc.idCaracteristica == caracC[1] && !tabla.includes(oc.idObjetos)) {
+                            intermedias.forEach(oc1 => {
+                                if (oc1.idCaracteristica == caracF[1]) {
+                                    tabla[4] = oc1.idObjetos
+                                }
+                            })
+                        }
+                    });
+                });
+
+                objetos.forEach(obj => {
+                    const intermedias = obj.objetoCaracteristicas
+                    intermedias.forEach(oc => {
+                        if (oc.idCaracteristica == caracC[1] && !tabla.includes(oc.idObjetos)) {
+                            intermedias.forEach(oc1 => {
+                                if (oc1.idCaracteristica == caracF[2]) {
+                                    tabla[7] = oc1.idObjetos
+                                }
+                            })
+                        }
+                    });
+                });
+                console.log('tabla1', tabla)
+
+                let idsCarac = []
+                caracteristicas.forEach(carac => {
+                    if (!caracC.includes(carac.id) && !caracF.includes(carac.id)) {
+                        idsCarac.push(carac.id)
+                    }
+                })
+
+                const conteo = {};
+
+                for (const obj of categoria.objetos) {
+                    for (const oc of obj.objetoCaracteristicas) {
+                        const id = oc.idCaracteristica;
+                        conteo[id] = (conteo[id] || 0) + 1;
+                    }
+                }
+
+                const ultimasCarac = idsCarac.filter(id => conteo[id] >= 3);
+                console.log(ultimasCarac)
+
+                ultimasCarac.forEach(caracFinal => {
+                    objetos.forEach(obj => {
+                        const intermedias = obj.objetoCaracteristicas
+                        intermedias.forEach(oc => {
+                            if (oc.idCaracteristica == caracFinal && !tabla.includes(oc.idObjetos)) {
+                                intermedias.forEach(oc1 => {
+                                    if (oc1.idCaracteristica == caracF[0]) {
+                                        intermedias.forEach(oc2 => {
+                                            if (oc2.idCaracteristica == caracF[1]) {
+                                                intermedias.forEach(oc3 => {
+                                                    if (oc3.idCaracteristica == caracF[2]) {
+                                                        caracC[2] = caracFinal
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        });
+                    });
+                })
+                console.log(caracC)
+                console.log(caracF)
+
+                
+                objetos.forEach(obj => {
+                    const intermedias = obj.objetoCaracteristicas
+                    intermedias.forEach(oc => {
+                        if (oc.idCaracteristica == caracC[2] && !tabla.includes(oc.idObjetos)) {
+                            intermedias.forEach(oc1 => {
+                                if (oc1.idCaracteristica == caracF[0]) {
+                                    tabla[2] = oc1.idObjetos
+                                }
+                            })
+                        }
+                    });
+                });
+
+                objetos.forEach(obj => {
+                    const intermedias = obj.objetoCaracteristicas
+                    intermedias.forEach(oc => {
+                        if (oc.idCaracteristica == caracC[2] && !tabla.includes(oc.idObjetos)) {
+                            intermedias.forEach(oc1 => {
+                                if (oc1.idCaracteristica == caracF[1]) {
+                                    tabla[5] = oc1.idObjetos
+                                }
+                            })
+                        }
+                    });
+                });
+
+                objetos.forEach(obj => {
+                    const intermedias = obj.objetoCaracteristicas
+                    intermedias.forEach(oc => {
+                        if (oc.idCaracteristica == caracC[2] && !tabla.includes(oc.idObjetos)) {
+                            intermedias.forEach(oc1 => {
+                                if (oc1.idCaracteristica == caracF[2]) {
+                                    tabla[8] = oc1.idObjetos
+                                }
+                            })
+                        }
+                    });
+                });
+
+                console.log(tabla)
+            }
         } else {
 
         }
         //console.log(categoria)
 
-        //let sudoku = [caracC, caracF, obj]
+        //let sudoku = [caracC, caracF, tabla]
         return categoria //sudoku
     }
 }
