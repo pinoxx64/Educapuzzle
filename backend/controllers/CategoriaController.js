@@ -134,6 +134,23 @@ const CategoriaController = {
                 })
             })
     },
+
+    funResolucionSudoku: (req, res) => {
+        conn.verResolucionSudoku(req.params.id)
+            .then(Categoria => {
+                res.status(200).json({
+                    status: 200,
+                    message: "Resolucion funciona correctamente",
+                    Categoria: Categoria
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    status: 500,
+                    message: err.message
+                })
+            })
+    },
 }
 
 export default CategoriaController

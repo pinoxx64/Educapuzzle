@@ -1,4 +1,4 @@
-<button pButton type="button" label="Crear" severity="success" icon="pi pi-plus" style="width: 220px; height: 60px; font-size: 1.4rem;"
+<!-- <button pButton type="button" label="Crear" severity="success" icon="pi pi-plus" style="width: 220px; height: 60px; font-size: 1.4rem;"
   (click)="abrirCrearCategoria()"></button>
 
 <p-table [value]="categorias" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
@@ -56,4 +56,70 @@
   [categoria]="categoriaCarac"
   (visibleChange)="dialogCaracVisible = $event"
   (onClose)="cerrarVerCarac()">
+</app-ver-caracteristicas> -->
+<button pButton type="button" label="Crear" severity="success" icon="pi pi-plus" style="width: 220px; height: 60px; font-size: 1.4rem;"
+  (click)="abrirCrearCategoria()"></button>
+
+<p-table [value]="categorias" [paginator]="true" [rows]="10" [responsiveLayout]="'scroll'">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Nombre</th>
+      <th>Acciones</th>
+    </tr>
+  </ng-template>
+
+  <p-confirmpopup></p-confirmpopup>
+  <ng-template pTemplate="body" let-categoria>
+    <tr>
+      <td>{{ categoria.nombre }}</td>
+      <td>
+        <button pButton type="button" label="Editar" severity="success" icon="pi pi-pencil"
+         (click)="abrirEditarCategoria(categoria)"></button>
+
+        <button pButton type="button" label="Eliminar" severity="danger" icon="pi pi-trash" class="p-button-text"
+          (click)="deleteCategorias($event, categoria.id)"></button>
+
+        <button pButton type="button" label="Objetos" severity="info" icon="pi pi-eye" class="p-button-text"
+          (click)="abrirVerObj(categoria)"></button>
+
+        <button pButton type="button" label="Caracteristicas" severity="help" icon="pi pi-palette" class="p-button-text"
+          (click)="abrirVerCarac(categoria)"></button>
+
+        <button pButton type="button" label="Test" severity="warn" icon="pi pi-angle-right" class="p-button-text"
+          (click)="abrirTestPuzzle(categoria)"></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<app-editar-categoria 
+  [visible]="dialogEditarVisible" 
+  [categoria]="categoriaAEditar" 
+  (onClose)="cerrarEditarCategoria()"
+  (onSave)="guardarEdicionCategoria($event)"
+></app-editar-categoria>
+
+<app-crear-categoria
+  [visible]="dialogCrearVisible"
+  (onClose)="cerrarCrearCategoria()"
+  (onSave)="guardarNuevaCategoria($event)">
+</app-crear-categoria>
+
+<app-ver-objetos
+  [visible]="dialogObjVisible"
+  [categoria]="categoriaObj"
+  (onClose)="cerrarVerObj()">
+</app-ver-objetos>
+
+<app-ver-caracteristicas
+  [visible]="dialogCaracVisible"
+  [categoria]="categoriaCarac"
+  (visibleChange)="dialogCaracVisible = $event"
+  (onClose)="cerrarVerCarac()">
 </app-ver-caracteristicas>
+
+<app-test-puzzle
+  [visible]="dialogTestVisible"
+  [categoria]="categoriaTest"
+  (onClose)="cerrarTestPuzzle()">
+</app-test-puzzle>

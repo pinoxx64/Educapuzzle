@@ -55,4 +55,22 @@ export class CategoriaService {
     const headers = new HttpHeaders().set('token', token || '');
     return this.http.delete<any>(`${environment.categoriaUrl}/${id}`, { headers, observe: 'response' })
   }
+
+  comprobarFuncional(id: number): Observable<any>{
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('token', token || '');
+    return this.http.get<any>(`${environment.categoriaUrl}/funcion/${id}`, { headers, observe: 'response' })
+  }
+
+  sudoku(id: number): Observable<any>{
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('token', token || '');
+    return this.http.get<any>(`${environment.categoriaUrl}/sudoku/${id}`, { headers, observe: 'response' })
+  }
+
+  resolverSudoku(id: number, body: any): Observable<any>{
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('token', token || '');
+    return this.http.post<any>(`${environment.categoriaUrl}/resolverSudoku/${id}`, body, { headers, observe: 'response' })
+  }
 }

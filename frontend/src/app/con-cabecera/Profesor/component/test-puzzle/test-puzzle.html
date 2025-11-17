@@ -1,3 +1,17 @@
-<p-dialog header="Test puzzle" [(visible)]="visible" [modal]="true" [style]="{width: '700px'}" (onHide)="cerrar()">
+<p-dialog header="Test puzzle" [(visible)]="visible" [modal]="true" [style]="{width: '500px'}" (onHide)="cerrar()">
+  <div *ngIf="cargando" style="text-align: center;">
+    <p>Comprobando categoría...</p>
+  </div>
 
+  <div *ngIf="error && !cargando" style="color: red; padding: 1rem; border: 1px solid red; border-radius: 4px;">
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="mensaje && !cargando && !error" style="padding: 1rem; background-color: #f0f9ff; border-left: 4px solid #0ea5e9; border-radius: 4px;">
+    <p>{{ mensaje }}</p>
+  </div>
+
+  <div style="text-align: right; margin-top: 2rem;">
+    <button pButton type="button" label="Cerrar" (click)="cerrar()"></button>
+  </div>
 </p-dialog>
