@@ -31,6 +31,39 @@ class UsuarioConnection {
 
         return users
     }
+    getUsersSinProfeNiAdminYOrdenadosPunt = async () => {
+        let users = []
+        console.log("dentro")
+        users = await Usuario.findAll({
+            paranoid: false,
+            include: [{
+                model: UsuarioRol,
+                as: 'roles',
+                where: {
+                    idRol: {
+                        [Op.notIn]: [1, 3]
+                    }
+                },
+                include: {
+                    model: Rol,
+                    as: 'rol'
+                },
+                order: [['puntuacion', 'ASC']]
+            }]
+        })
+        if (!users) throw new Error("No hay usuarios")
+
+        users = users.map(usuario => ({
+            id: usuario.id,
+            name: usuario.name,
+            correo: usuario.correo,
+            puntuacion: usuario.puntuacion,
+            deletedAt: usuario.deletedAt,
+            roles: usuario.roles.map(rol => rol.rol.nombre)
+        }))
+
+        return users
+    }
 
     getUserById = async (id) => {
         let user = []

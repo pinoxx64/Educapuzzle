@@ -9,18 +9,27 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class UsuarioService {
-    constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-    login(body: any): Observable<UsuarioResponse> {
+  login(body: any): Observable<UsuarioResponse> {
     console.log(body)
     return this.http.post<UsuarioResponse>(`${environment.usuarioUrl}/login`, body)
   }
 
-    getUsers(): Observable<Usuario[]> {
+  getUsers(): Observable<Usuario[]> {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('token', token || '');
     console.log(headers)
     return this.http.get<{ users: Usuario[] }>(`${environment.usuarioUrl}/`, { headers }).pipe(
+      map(response => response.users || [])
+    );
+  }
+
+  getRanking(): Observable<Usuario[]> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('token', token || '');
+    console.log(headers)
+    return this.http.get<{ users: Usuario[] }>(`${environment.usuarioUrl}/ranking`, { headers }).pipe(
       map(response => response.users || [])
     );
   }

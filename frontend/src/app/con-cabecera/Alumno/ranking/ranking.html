@@ -1,0 +1,40 @@
+<div class="ranking-container">
+  <div class="podio-area">
+    <div class="podio-col podium-2" *ngIf="topThree[1]">
+      <div class="medalla medalla-2">2</div>
+      <div class="nombre" style="color: aliceblue;">{{ obtenerNombre(topThree[1]) }}</div>
+      <div class="puntos" style="color: aliceblue;">{{ obtenerPuntos(topThree[1]) }}</div>
+    </div>
+
+    <div class="podio-col podium-1" *ngIf="topThree[0]">
+      <div class="medalla medalla-1">1</div>
+      <div class="nombre" style="color: aliceblue;">{{ obtenerNombre(topThree[0]) }}</div>
+      <div class="puntos" style="color: aliceblue;">{{ obtenerPuntos(topThree[0]) }}</div>
+    </div>
+
+    <div class="podio-col podium-3" *ngIf="topThree[2]">
+      <div class="medalla medalla-3">3</div>
+      <div class="nombre" style="color: aliceblue;">{{ obtenerNombre(topThree[2]) }}</div>
+      <div class="puntos" style="color: aliceblue;">{{ obtenerPuntos(topThree[2]) }}</div>
+    </div>
+  </div>
+
+  <div class="tabla-area">
+    <p-table [value]="others" [paginator]="true" [rows]="10" [loading]="loading">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Pos</th>
+          <th>Nombre</th>
+          <th>Puntos</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user let-i="rowIndex">
+        <tr>
+          <td>{{ i + 4 }}</td>
+          <td>{{ obtenerNombre(user) }}</td>
+          <td>{{ obtenerPuntos(user) }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

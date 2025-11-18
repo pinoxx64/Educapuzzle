@@ -8,6 +8,7 @@ router.post('/login', UsuarioController.funLogin)
 
 router.get('/',[validJWT] ,UsuarioController.funGetUsers)
 router.get('/:id',[validJWT], UsuarioController.funGetUser)
+router.get('/ranking', [validJWT], UsuarioController.funGetUsersSinProfeNiAdminYOrdenadosPunt)
 router.get('/buscar/correo',[validJWT], UsuarioController.funGetUserByCorreo)
 router.post('/', UsuarioController.funPostUser)
 router.put('/:id',[validJWT], UsuarioController.funPutUser)
