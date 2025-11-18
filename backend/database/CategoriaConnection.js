@@ -702,6 +702,11 @@ class CategoriaConnection {
     }
 
     verResolucionSudoku = async (caracF, caracC, tabla, usuarioId) => {
+        console.log('caracF', caracF);
+        console.log('caracC', caracC);
+        console.log('tabla', tabla);
+        console.log('usuarioId', usuarioId);
+
         let aciertos = 0;
         const totalCeldas = tabla.length;
 

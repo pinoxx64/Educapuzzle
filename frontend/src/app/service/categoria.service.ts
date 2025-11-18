@@ -75,6 +75,8 @@ export class CategoriaService {
     const body = { caracC, caracF, tabla };
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('token', token || '');
-    return this.http.post<any>(`${environment.categoriaUrl}/resolverSudoku/${id}`, body, { headers, observe: 'response' })
+    const re = this.http.post<any>(`${environment.categoriaUrl}/resolverSudoku/${id}`, body, { headers, observe: 'response' })
+    console.log('re', re)
+    return re
   }
 }

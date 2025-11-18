@@ -136,7 +136,7 @@ const CategoriaController = {
     },
 
     funResolucionSudoku: (req, res) => {
-        conn.verResolucionSudoku(req.params.id)
+        conn.verResolucionSudoku(req.body.caracF, req.body.caracC, req.body.tabla, req.params.id)
             .then(Categoria => {
                 res.status(200).json({
                     status: 200,
