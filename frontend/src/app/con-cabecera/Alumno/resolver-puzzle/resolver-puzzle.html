@@ -1,0 +1,76 @@
+<div class="resolver-puzzle-container" style="display:flex; gap:1rem; align-items:flex-start;">
+  <!-- Panel izquierdo: selección de categoría y tablero -->
+  <div style="flex: 1; max-width: 640px;">
+    <label for="categoriaSelect"><strong>Seleccionar categoría</strong></label>
+    <select id="categoriaSelect" [(ngModel)]="selectedCategoriaId" (change)="onCategoriaChange()" class="p-inputtext" style="width:100%; padding:0.5rem; margin-bottom:1rem;">
+      <option [ngValue]="null">-- Elige categoría --</option>
+      <option *ngFor="let c of categorias" [ngValue]="c.id">{{ c.nombre }}</option>
+    </select>
+
+    <div *ngIf="cargando" style="padding:1rem; background:#f5f5f5; border-radius:4px; margin-bottom:1rem;">
+      Generando / comprobando... 
+    </div>
+
+    <div *ngIf="error" style="color:#b71c1c; padding:0.5rem; margin-bottom:1rem; border:1px solid #f5c6c6; border-radius:4px;">
+      {{ error }}
+    </div>
+
+    <!-- Tablero 3x3 con caracteristicas encima y al lado -->
+    <div style="margin-top:2rem;">      
+      <!-- Contenedor principal con grid -->
+      <div style="margin-top:1rem; display:inline-block;">
+        
+        <!-- Fila de caracteristicas de columna (encima) -->
+        <div style="display:grid; grid-template-columns: 80px repeat(3, 1fr); gap:8px; margin-bottom:8px;">
+          <div></div> <!-- Espacio vacío arriba a la izquierda -->
+          <div *ngFor="let c of caracC; let i = index" style="padding:0.5rem; background:#eef; border-radius:4px; text-align:center; font-weight:bold; color:black;">
+            {{ c }}
+          </div>
+        </div>
+
+        <!-- Filas del tablero con caracteristicas de fila a la izquierda -->
+        <div *ngFor="let fila of [0, 1, 2]; let filaIdx = index" style="display:grid; grid-template-columns: 80px repeat(3, 1fr); gap:8px; margin-bottom:8px;">
+          
+          <!-- Caracteristica de fila (izquierda) -->
+          <div style="padding:0.5rem; background:#efe; border-radius:4px; text-align:center; font-weight:bold; color:black; min-width:80px;">
+            {{ caracF[filaIdx] }}
+          </div>
+
+          <!-- Celdas del sudoku -->
+          <div *ngFor="let col of [0, 1, 2]" style="border:1px solid #ddd; padding:8px; border-radius:4px; min-height:80px;">
+            <select [(ngModel)]="tabla[filaIdx * 3 + col]" style="width:100%; padding:0.4rem; height:100%; font-size:0.9rem;">
+              <option [ngValue]="0">Ninguno</option>
+              <option *ngFor="let opt of opcionesObjetos()" [ngValue]="opt.id">
+                {{ opt.nombre }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="text-align:right; margin-top:1rem;">
+      <button (click)="finalizarSudoku()" style="padding:0.6rem 1rem; background:#1976d2; color:#fff; border:none; border-radius:4px; cursor:pointer;">
+        Finalizar sudoku
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel derecho: mostrar resultado de verResolucionSudoku -->
+  <div style="width:360px; border-left:1px solid #eee; padding-left:1rem;">
+    <h4>Resultado</h4>
+
+    <div *ngIf="!resultado && !cargando && !error" style="color:#666;">
+      Ejecuta "Finalizar sudoku" para ver la puntuación
+    </div>
+
+    <div *ngIf="resultado" style="background:#f7f7f7; padding:0.75rem; border-radius:4px;">
+      <p><strong>Aciertos:</strong> {{ resultado.aciertos }} / {{ resultado.totalCeldas }}</p>
+      <p><strong>Porcentaje:</strong> {{ resultado.porcentaje }}%</p>
+      <p><strong>Puntos ganados:</strong> {{ resultado.puntosGanados }}</p>
+      <p *ngIf="resultado.completado" style="color:green"><strong>Bonus completado ✅</strong></p>
+      <p><strong>Puntos total usuario:</strong> {{ resultado.puntosUsuario }}</p>
+    </div>
+  </div>
+</div>

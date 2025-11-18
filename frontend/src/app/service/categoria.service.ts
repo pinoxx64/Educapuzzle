@@ -23,9 +23,12 @@ export class CategoriaService {
   getCategoria(id: number): Observable<Categoria> {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('token', token || '');
-    return this.http.get<{ categorias: Categoria }>(`${environment.categoriaUrl}/${id}`, { headers }).pipe(
+    console.log('hola', id)
+    const re = this.http.get<{ categorias: Categoria }>(`${environment.categoriaUrl}/${id}`, { headers }).pipe(
       map(response => response.categorias || [])
     )
+    console.log('re', re)
+    return re
   }
 
   getPuzzle(): Observable<Puzzle[]> {
@@ -54,5 +57,26 @@ export class CategoriaService {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('token', token || '');
     return this.http.delete<any>(`${environment.categoriaUrl}/${id}`, { headers, observe: 'response' })
+  }
+
+  comprobarFuncional(id: number): Observable<any>{
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('token', token || '');
+    return this.http.get<any>(`${environment.categoriaUrl}/funcion/${id}`, { headers, observe: 'response' })
+  }
+
+  sudoku(id: number): Observable<any>{
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('token', token || '');
+    return this.http.get<any>(`${environment.categoriaUrl}/sudoku/${id}`, { headers, observe: 'response' })
+  }
+
+  resolverSudoku(id: number, caracC: any, caracF: any, tabla: any): Observable<any>{
+    const body = { caracC, caracF, tabla };
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('token', token || '');
+    const re = this.http.post<any>(`${environment.categoriaUrl}/resolverSudoku/${id}`, body, { headers, observe: 'response' })
+    console.log('re', re)
+    return re
   }
 }
