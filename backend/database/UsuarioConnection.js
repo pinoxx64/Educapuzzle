@@ -1,6 +1,6 @@
 import { Usuario, Rol, UsuarioRol } from '../models/association.js'
 import bycrypt from 'bcrypt'
-import { Op, where } from 'sequelize'
+import { Op, where, Sequelize } from 'sequelize'
 
 class UsuarioConnection {
     getUsers = async () => {
@@ -31,7 +31,50 @@ class UsuarioConnection {
 
         return users
     }
+    
+    getUsersSinProfeNiAdminYOrdenadosPunt = async () => {
+        try {
+            const users = await Usuario.findAll({
+                where: {
+                    id: {
+                        [Op.notIn]: Sequelize.literal(`(SELECT idUsu FROM usuariorols WHERE idRol IN (1,3))`)
+                    }
+                },
+                include: [
+                    {
+                        model: UsuarioRol,
+                        as: 'roles',
+                        required: false,
+                        include: [
+                            {
+                                model: Rol,
+                                as: 'rol',
+                                attributes: ['id', 'nombre'],
+                                required: false
+                            }
+                        ]
+                    }
+                ],
+                order: [['puntuacion', 'DESC']]
+            });
 
+            if (!users || users.length === 0) return [];
+
+            const mapped = users.map(u => ({
+                id: u.id,
+                name: u.name,
+                correo: u.correo,
+                puntuacion: u.puntuacion,
+                deletedAt: u.deletedAt,
+                roles: (u.roles || []).map(ur => (ur.rol ? ur.rol.nombre : null)).filter(Boolean)
+            }));
+
+            return mapped;
+        } catch (err) {
+            console.error('Error getUsersSinProfeNiAdminYOrdenadosPunt:', err);
+            throw err;
+        }
+    };
     getUserById = async (id) => {
         let user = []
         user = await Usuario.findOne({

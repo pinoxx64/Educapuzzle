@@ -36,6 +36,22 @@ const UsuarioController = {
                 })
             })
     },
+    funGetUsersSinProfeNiAdminYOrdenadosPunt: (req, res) => {
+        conn.getUsersSinProfeNiAdminYOrdenadosPunt()
+            .then(user => {
+                res.status(200).json({
+                    status: 200,
+                    message: "Usuario obtenido correctamente",
+                    user: user
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    status: 500,
+                    message: err.message
+                })
+            })
+    },
     funGetUserByCorreo: (req, res) => {
         conn.getUserByCorreo(req.body.correo)
             .then(user => {
