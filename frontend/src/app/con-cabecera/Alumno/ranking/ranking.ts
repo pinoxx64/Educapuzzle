@@ -28,8 +28,8 @@ export class Ranking implements OnInit {
       next: (users: any[]) => {
         console.log('Ranking cargado', users);
         const sorted = (users || []).slice().sort((a: any, b: any) => {
-          const sa = Number(a.puntuacion ?? a.puntos ?? 0);
-          const sb = Number(b.puntuacion ?? b.puntos ?? 0);
+          const sa = Number(a.puntuacion);
+          const sb = Number(b.puntuacion);
           return sb - sa;
         });
         this.topThree = sorted.slice(0, 3);
@@ -44,10 +44,10 @@ export class Ranking implements OnInit {
   }
 
   obtenerNombre(u: any) {
-    return u?.user?.name ?? u?.name ?? 'Usuario';
+    return u?.name;
   }
 
   obtenerPuntos(u: any) {
-    return Number(u?.puntuacion ?? u?.puntos ?? 0);
+    return Number(u?.puntuacion);
   }
 }

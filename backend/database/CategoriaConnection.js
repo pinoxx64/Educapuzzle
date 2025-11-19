@@ -119,6 +119,7 @@ class CategoriaConnection {
                 }
             ]
         });
+        console.log(categoria)
 
         if (!categoria) throw new Error("No existe la categoría");
 
@@ -559,7 +560,7 @@ class CategoriaConnection {
 
                     // VALIDACIÓN Y CORRECCIÓN DEL SUDOKU
                     let intentos = 0;
-                    const maxIntentos = 20;
+                    const maxIntentos = 100;
                     let sudokuValido = false;
 
                     while (intentos < maxIntentos && !sudokuValido) {

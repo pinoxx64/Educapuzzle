@@ -24,7 +24,7 @@
         <div style="display:grid; grid-template-columns: 80px repeat(3, 1fr); gap:8px; margin-bottom:8px;">
           <div></div> <!-- Espacio vacío arriba a la izquierda -->
           <div *ngFor="let c of caracC; let i = index" style="padding:0.5rem; background:#eef; border-radius:4px; text-align:center; font-weight:bold; color:black;">
-            {{ c }}
+            {{ nombreCaracteristica(c) }}
           </div>
         </div>
 
@@ -33,7 +33,7 @@
           
           <!-- Caracteristica de fila (izquierda) -->
           <div style="padding:0.5rem; background:#efe; border-radius:4px; text-align:center; font-weight:bold; color:black; min-width:80px;">
-            {{ caracF[filaIdx] }}
+            {{ nombreCaracteristica(caracF[filaIdx]) }}
           </div>
 
           <!-- Celdas del sudoku -->

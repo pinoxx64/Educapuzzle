@@ -30,7 +30,7 @@ export class CaracteristicaService {
     const headers = new HttpHeaders().set('token', token);
     const url = `${environment.caracteristicaUrl}/categoria/${idCategria}`;
     return this.http.get<any>(url, { headers }).pipe(
-      tap(resp =>  resp))
+      tap(resp =>  console.log(resp.caracteristica)))
   }
 
   postCaracteristica(body: any): Observable<CaracteristicaResponse> {
