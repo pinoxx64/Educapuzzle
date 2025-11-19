@@ -25,15 +25,16 @@ export class UsuarioService {
     );
   }
 
-  getRanking(): Observable<Usuario[]> {
+  getRanking(): Observable<any[]> {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('token', token || '');
-    console.log(headers)
-    return this.http.get<{ users: Usuario[] }>(`${environment.usuarioUrl}/ranking`, { headers }).pipe(
-      map(response => response.users || [])
+
+    return this.http.get<any>(`${environment.usuarioUrl}/ranking/usuarios`, { headers }).pipe(
+      map(response => {
+        return response.user
+      })
     );
   }
-
   putUser(user: Usuario): Observable<HttpResponse<Usuario>> {
     console.log(user)
     const token = sessionStorage.getItem('token');
