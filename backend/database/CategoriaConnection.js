@@ -195,7 +195,7 @@ class CategoriaConnection {
                     let caracArray = caracteristicas.map(c => Number(c.id));
                     let sudokuValido = false;
                     let intentosCombinacion = 0;
-                    const maxIntentosCombinacion = 100;
+                    const maxIntentosCombinacion = 20;
 
                     while (intentosCombinacion < maxIntentosCombinacion && !sudokuValido) {
 
@@ -699,7 +699,7 @@ class CategoriaConnection {
 
                     // validar sudoku
                     let intentos = 0;
-                    const maxIntentos = 100;
+                    const maxIntentos = 20;
                     let sudokuValido = false;
 
                     while (intentos < maxIntentos && !sudokuValido) {
@@ -868,31 +868,21 @@ class CategoriaConnection {
 
             if (tieneCaracFila && tieneCaracCol) {
                 aciertos++;
-            } else {
-                if (!tieneCaracFila) {
-                    console.log(`Falta característica de fila: ${caracFila}`);
-                }
-                if (!tieneCaracCol) {
-                    console.log(`Falta característica de columna: ${caracCol}`);
-                }
             }
         }
 
-        // Actualizar puntos del usuario
         let puntosGanados = aciertos;
 
-        // Bonus si acertó todas las celdas
         if (aciertos === totalCeldas) {
             puntosGanados += 1;
         }
 
-        // Actualizar el usuario con los nuevos puntos
         const usuario = await Usuario.findOne({ where: { id: usuarioId } });
         if (!usuario) {
             throw new Error("El usuario no existe");
         }
 
-        const puntosActuales = usuario.puntos || 0;
+        const puntosActuales = usuario.puntuacion;
         await Usuario.update(
             { puntuacion: puntosActuales + puntosGanados },
             { where: { id: usuarioId } }
