@@ -167,8 +167,6 @@ class CategoriaConnection {
         let sudokuCompleto = null;
 
         while (intentosGenerales < maxIntentosGenerales && !sudokuCompleto) {
-            console.log(`\n🔄 INTENTO GENERAL ${intentosGenerales + 1}/${maxIntentosGenerales}`);
-
             try {
                 const categoria = await Categoria.findOne({
                     where: { id },
@@ -191,11 +189,8 @@ class CategoriaConnection {
                 const objetos = categoria.objetos;
                 const caracteristicas = categoria.caracteristicas;
 
-                console.log(`📊 Objetos: ${objetos.length}, Características: ${caracteristicas.length}`);
-
-                // ALGORITMO PARA CATEGORÍAS PEQUEÑAS (≤12 objetos y ≤10 características)
+                // algoritmo cat pequeñas (objetos <= 12 y carac <= 10)
                 if (objetos.length <= 12 && caracteristicas.length <= 10) {
-                    console.log('🔀 USANDO ALGORITMO PARA CATEGORÍAS PEQUEÑAS (Combinaciones Aleatorias)');
 
                     let caracArray = caracteristicas.map(c => Number(c.id));
                     let sudokuValido = false;
@@ -203,13 +198,11 @@ class CategoriaConnection {
                     const maxIntentosCombinacion = 100;
 
                     while (intentosCombinacion < maxIntentosCombinacion && !sudokuValido) {
-                        console.log(`\n  🎲 Intento de combinación ${intentosCombinacion + 1}/${maxIntentosCombinacion}`);
 
-                        // Generar combinaciones aleatorias de caracC y caracF
                         let caracC = [];
                         let caracF = [];
 
-                        // Seleccionar 3 características aleatorias para columnas
+                        // Seleccionar 3 carac random para caracC
                         let indices = [];
                         while (indices.length < 3 && indices.length < caracArray.length) {
                             let idx = Math.floor(Math.random() * caracArray.length);
@@ -219,7 +212,7 @@ class CategoriaConnection {
                         }
                         caracC = indices.map(i => caracArray[i]);
 
-                        // Seleccionar 3 características aleatorias para filas (distintas a columnas)
+                        // Seleccionar 3 carac random para caracF
                         indices = [];
                         while (indices.length < 3 && indices.length < caracArray.length) {
                             let idx = Math.floor(Math.random() * caracArray.length);
@@ -239,15 +232,13 @@ class CategoriaConnection {
                         }
 
                         if (caracC.length < 3 || caracF.length < 3) {
-                            console.log(`  ⚠️ No hay suficientes características distintas (C: ${caracC.length}, F: ${caracF.length})`);
+                            console.log(`No hay suficientes características distintas (C: ${caracC.length}, F: ${caracF.length})`);
                             intentosCombinacion++;
                             continue;
                         }
 
-                        console.log(`  caracC: ${caracC}`);
-                        console.log(`  caracF: ${caracF}`);
-
-                        // Intentar llenar la tabla 3x3 con esta combinación
+                            console.log('caracC', caracC);
+                            console.log('caracF', caracF);
                         let tabla = Array(9).fill(0);
                         let combinacionValida = true;
 
@@ -257,7 +248,7 @@ class CategoriaConnection {
                                 const caracFila = caracF[fila];
                                 const caracCol = caracC[col];
 
-                                // Buscar un objeto que tenga ambas características y no esté en la tabla
+                                // Buscar un objeto que tenga ambas carac y no esté en la tabla
                                 let objValido = objetos.find(o =>
                                     !tabla.includes(o.id) &&
                                     o.objetoCaracteristicas.some(oc => oc.idCaracteristica === caracFila) &&
@@ -266,9 +257,9 @@ class CategoriaConnection {
 
                                 if (objValido) {
                                     tabla[idx] = objValido.id;
-                                    console.log(`    Celda [${idx}] (F${fila},C${col}): Objeto ${objValido.id} ✅`);
+                                    console.log(`Celda [${idx}] (F${fila},C${col}): Objeto ${objValido.id} ✅`);
                                 } else {
-                                    console.log(`    Celda [${idx}] (F${fila},C${col}): ❌ No hay objeto válido`);
+                                    console.log(`Celda [${idx}] (F${fila},C${col}): ❌ No hay objeto válido`);
                                     combinacionValida = false;
                                     break;
                                 }
@@ -277,12 +268,10 @@ class CategoriaConnection {
                         }
 
                         if (combinacionValida) {
-                            console.log(`\n  ✅ COMBINACIÓN VÁLIDA ENCONTRADA`);
-                            console.log(`  caracC: ${caracC}`);
-                            console.log(`  caracF: ${caracF}`);
-                            console.log(`  tabla: ${tabla}`);
+                            console.log('caracC', caracC);
+                            console.log('caracF', caracF);
+                            console.log('tabla', tabla);
 
-                            // VALIDACIÓN FINAL
                             let esValido = true;
                             for (let i = 0; i < tabla.length; i++) {
                                 const objId = tabla[i];
@@ -307,7 +296,6 @@ class CategoriaConnection {
                             }
 
                             if (esValido) {
-                                console.log('\n✅ SUDOKU VALIDADO CORRECTAMENTE');
                                 sudokuCompleto = [caracC, caracF, tabla];
                                 break;
                             }
@@ -321,8 +309,7 @@ class CategoriaConnection {
                     }
 
                 } else {
-                    // ALGORITMO ORIGINAL PARA CATEGORÍAS GRANDES
-                    console.log('🔍 USANDO ALGORITMO PARA CATEGORÍAS GRANDES');
+                    // algoritmo cat grandes
 
                     let caracC = Array(3).fill(0);
                     let caracF = Array(3).fill(0);
@@ -378,6 +365,7 @@ class CategoriaConnection {
 
                     console.log('Objetos con carac 1:', objCaracPeq);
 
+                    // Seleccionar 3 objetos de los que tienen la primera carac
                     let seleccionados;
                     let objElec;
                     let objElecNum;
@@ -424,6 +412,7 @@ class CategoriaConnection {
                         }
                     }
 
+                    // Seleccionar la segunda carac y colocar objetos
                     let minValor = Math.min(...objElecNum);
                     let indicesMin = objElecNum
                         .map((valor, idx) => (valor === minValor ? idx : -1))
@@ -457,6 +446,7 @@ class CategoriaConnection {
                         }
                     }
 
+                    // Elegir aleatoriamente una carac de las posibles para la fila
                     if (caracObjElegido.length == 1) {
                         caracF[posicionfila1] = caracObjElegido[0];
                     } else {
@@ -478,6 +468,7 @@ class CategoriaConnection {
                     });
                     console.log('posiblesObjNuevos', posiblesObjNuevos);
 
+                    // Colocar los nuevos objetos en la tabla
                     if (posiblesObjNuevos.length < 2) throw new Error("Hay un error a la hora de colocar los objetos de la 2º caracteristica elegida");
                     else if (posiblesObjNuevos.length == 2) {
                         for (let i = 0; i < tabla.length; i++) {
@@ -487,9 +478,11 @@ class CategoriaConnection {
                             }
                         }
                     } else {
+                        // más de 2 objetos posibles
                         let objElecSinElec = objElec.filter(oe => oe !== elegidoId);
                         console.log('objElecSinElec', objElecSinElec);
 
+                        // obtener carac de los objetos seleccionados sin el elegido
                         let caracOESE1 = [];
                         objetos.forEach(obj => {
                             if (obj.id == objElecSinElec[0]) {
@@ -518,6 +511,7 @@ class CategoriaConnection {
                         console.log('caracOESE2', caracOESE2);
                         console.log(posicionfila1);
 
+                        // buscar combinaciones válidas
                         objetos.forEach(obj => {
                             const intermedias = obj.objetoCaracteristicas;
                             for (let i = 0; i < posiblesObjNuevos.length; i++) {
@@ -557,6 +551,7 @@ class CategoriaConnection {
                         console.log('caracF', caracF);
                         console.log('tabla', tabla);
 
+                        // colocar el último objeto
                         objetos.forEach(obj => {
                             const intermedias = obj.objetoCaracteristicas;
                             intermedias.forEach(oc => {
@@ -584,6 +579,7 @@ class CategoriaConnection {
                         });
                         console.log('tabla1', tabla);
 
+                        // colocar la última caracC y completar tabla
                         let idsCarac = [];
                         caracteristicas.forEach(carac => {
                             if (!caracC.includes(carac.id) && !caracF.includes(carac.id)) {
@@ -602,6 +598,7 @@ class CategoriaConnection {
                         const ultimasCarac = idsCarac.filter(id => conteo[id] >= 3);
                         console.log(ultimasCarac);
 
+                        // elegir la caracC que complete la tabla
                         ultimasCarac.forEach(caracFinal => {
                             objetos.forEach(obj => {
                                 const intermedias = obj.objetoCaracteristicas;
@@ -671,6 +668,7 @@ class CategoriaConnection {
                         caracC = caracC.filter(c => c !== 0);
                         caracF = caracF.filter(c => c !== 0);
 
+                        // completar caracC y caracF si falta alguno
                         while (caracC.length < 3 && caracteristicas.length > 0) {
                             const caraFaltante = caracteristicas.find(c => !caracC.includes(c.id) && !caracF.includes(c.id));
                             if (caraFaltante) caracC.push(caraFaltante.id);
@@ -699,13 +697,12 @@ class CategoriaConnection {
                         console.log('tabla post-fix', tabla);
                     }
 
-                    // VALIDACIÓN Y CORRECCIÓN DEL SUDOKU
+                    // validar sudoku
                     let intentos = 0;
                     const maxIntentos = 100;
                     let sudokuValido = false;
 
                     while (intentos < maxIntentos && !sudokuValido) {
-                        console.log(`\n🔍 INTENTO DE VALIDACIÓN ${intentos + 1}/${maxIntentos}`);
                         sudokuValido = true;
 
                         for (let i = 0; i < tabla.length; i++) {
@@ -719,7 +716,6 @@ class CategoriaConnection {
 
                             let objEncontrado = objetos.find(o => o.id === objId);
                             if (!objEncontrado) {
-                                console.log(`❌ Objeto ${objId} no existe`);
                                 sudokuValido = false;
                                 continue;
                             }
@@ -728,7 +724,6 @@ class CategoriaConnection {
                             const tieneCaracCol = objEncontrado.objetoCaracteristicas.some(oc => oc.idCaracteristica === caracCol);
 
                             if (!tieneCaracFila || !tieneCaracCol) {
-                                console.log(`❌ Objeto ${objId} no tiene ambas características (Fila: ${tieneCaracFila}, Col: ${tieneCaracCol})`);
                                 sudokuValido = false;
 
                                 let objValido = objetos.find(o =>
@@ -738,10 +733,8 @@ class CategoriaConnection {
                                 );
 
                                 if (objValido) {
-                                    console.log(`✅ Sustituyendo objeto ${objId} por ${objValido.id}`);
                                     tabla[i] = objValido.id;
                                 } else {
-                                    console.log(`⚠️ No hay objeto válido para esta combinación. Intentando cambiar fila o columna...`);
 
                                     let encontroAlternativa = false;
 
@@ -759,7 +752,6 @@ class CategoriaConnection {
                                                 );
 
                                                 if (objConNuevaCol) {
-                                                    console.log(`✅ Cambiando caracC[${colIdx}] de ${caracCol} a ${c.id}`);
                                                     caracC[colIdx] = c.id;
                                                     tabla[i] = objConNuevaCol.id;
                                                     encontroAlternativa = true;
@@ -784,7 +776,6 @@ class CategoriaConnection {
                                                     );
 
                                                     if (objConNuevaFila) {
-                                                        console.log(`✅ Cambiando caracF[${filaIdx}] de ${caracFila} a ${c.id}`);
                                                         caracF[filaIdx] = c.id;
                                                         tabla[i] = objConNuevaFila.id;
                                                         encontroAlternativa = true;
@@ -799,8 +790,6 @@ class CategoriaConnection {
                                         throw new Error(`Celda [${i}] sin solución posible - Reiniciando generación`);
                                     }
                                 }
-                            } else {
-                                console.log(`✅ Objeto ${objId} es válido`);
                             }
                         }
 
@@ -808,12 +797,9 @@ class CategoriaConnection {
                     }
 
                     if (!sudokuValido) {
-                        console.log(`❌ No se validó en ${maxIntentos} intentos. Reintentando generación...`);
                         intentosGenerales++;
                         continue;
                     }
-
-                    console.log('\n✅ SUDOKU VALIDADO CORRECTAMENTE');
                     console.log('caracC Final:', caracC);
                     console.log('caracF Final:', caracF);
                     console.log('tabla Final:', tabla);
@@ -822,7 +808,6 @@ class CategoriaConnection {
                 }
 
             } catch (error) {
-                console.log(`❌ Error en intento general ${intentosGenerales + 1}: ${error.message}`);
                 intentosGenerales++;
             }
         }
@@ -852,7 +837,6 @@ class CategoriaConnection {
             throw new Error("Las dimensiones del sudoku no son correctas");
         }
 
-        console.log('\n🔍 VERIFICANDO RESOLUCIÓN DEL SUDOKU');
         console.log('caracF:', caracF);
         console.log('caracC:', caracC);
         console.log('tabla:', tabla);
@@ -865,9 +849,6 @@ class CategoriaConnection {
             const caracFila = caracF[filaIdx];
             const caracCol = caracC[colIdx];
 
-            console.log(`\nCelda [${i}] (Fila ${filaIdx}, Col ${colIdx}): Objeto ${objId}`);
-            console.log(`  Esperado: caracF[${filaIdx}]=${caracFila}, caracC[${colIdx}]=${caracCol}`);
-
             // Buscar el objeto en la base de datos
             const objeto = await Objeto.findOne({
                 where: { id: objId },
@@ -878,7 +859,6 @@ class CategoriaConnection {
             });
 
             if (!objeto) {
-                console.log(`  ❌ El objeto ${objId} no existe`);
                 continue;
             }
 
@@ -887,20 +867,16 @@ class CategoriaConnection {
             const tieneCaracCol = objeto.objetoCaracteristicas.some(oc => oc.idCaracteristica === caracCol);
 
             if (tieneCaracFila && tieneCaracCol) {
-                console.log(`  ✅ CORRECTO - El objeto ${objId} tiene ambas características`);
                 aciertos++;
             } else {
-                console.log(`  ❌ INCORRECTO - El objeto ${objId} no tiene las características correctas`);
                 if (!tieneCaracFila) {
-                    console.log(`     Falta característica de fila: ${caracFila}`);
+                    console.log(`Falta característica de fila: ${caracFila}`);
                 }
                 if (!tieneCaracCol) {
-                    console.log(`     Falta característica de columna: ${caracCol}`);
+                    console.log(`Falta característica de columna: ${caracCol}`);
                 }
             }
         }
-
-        console.log(`\n📊 RESULTADO: ${aciertos}/${totalCeldas} celdas correctas`);
 
         // Actualizar puntos del usuario
         let puntosGanados = aciertos;
@@ -908,7 +884,6 @@ class CategoriaConnection {
         // Bonus si acertó todas las celdas
         if (aciertos === totalCeldas) {
             puntosGanados += 1;
-            console.log('🎉 ¡SUDOKU COMPLETADO CORRECTAMENTE! Bonus de 1 punto extra');
         }
 
         // Actualizar el usuario con los nuevos puntos
@@ -922,8 +897,6 @@ class CategoriaConnection {
             { puntuacion: puntosActuales + puntosGanados },
             { where: { id: usuarioId } }
         );
-
-        console.log(`✅ Usuario ${usuarioId} ganó ${puntosGanados} puntos (Total: ${puntosActuales + puntosGanados})`);
 
         const resultado = {
             aciertos,
