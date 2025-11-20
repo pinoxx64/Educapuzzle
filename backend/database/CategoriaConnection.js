@@ -170,9 +170,6 @@ class CategoriaConnection {
             console.log(`\n🔄 INTENTO GENERAL ${intentosGenerales + 1}/${maxIntentosGenerales}`);
 
             try {
-                let caracC = Array(3).fill(0)
-                let caracF = Array(3).fill(0)
-                let tabla = Array(9).fill(0)
                 const categoria = await Categoria.findOne({
                     where: { id },
                     include: [
@@ -191,76 +188,224 @@ class CategoriaConnection {
                     ]
                 });
 
-                const objetos = categoria.objetos
-                const caracteristicas = categoria.caracteristicas
+                const objetos = categoria.objetos;
+                const caracteristicas = categoria.caracteristicas;
 
-                let caracArray = caracteristicas.map(c => Number(c.id));
-                console.log('Caracteristicas', caracArray);
+                console.log(`📊 Objetos: ${objetos.length}, Características: ${caracteristicas.length}`);
 
-                let caracCont = Array(caracArray.length).fill(0);
+                // ALGORITMO PARA CATEGORÍAS PEQUEÑAS (≤12 objetos y ≤10 características)
+                if (objetos.length <= 12 && caracteristicas.length <= 10) {
+                    console.log('🔀 USANDO ALGORITMO PARA CATEGORÍAS PEQUEÑAS (Combinaciones Aleatorias)');
 
-                objetos.forEach(obj => {
-                    const intermedias = obj.objetoCaracteristicas
+                    let caracArray = caracteristicas.map(c => Number(c.id));
+                    let sudokuValido = false;
+                    let intentosCombinacion = 0;
+                    const maxIntentosCombinacion = 100;
 
-                    intermedias.forEach(oc => {
-                        const idCar = Number(oc.idCaracteristica);
-                        for (let i = 0; i < caracArray.length; i++) {
-                            if (idCar === caracArray[i]) {
-                                caracCont[i]++;
+                    while (intentosCombinacion < maxIntentosCombinacion && !sudokuValido) {
+                        console.log(`\n  🎲 Intento de combinación ${intentosCombinacion + 1}/${maxIntentosCombinacion}`);
+
+                        // Generar combinaciones aleatorias de caracC y caracF
+                        let caracC = [];
+                        let caracF = [];
+
+                        // Seleccionar 3 características aleatorias para columnas
+                        let indices = [];
+                        while (indices.length < 3 && indices.length < caracArray.length) {
+                            let idx = Math.floor(Math.random() * caracArray.length);
+                            if (!indices.includes(idx)) {
+                                indices.push(idx);
                             }
                         }
-                    });
-                });
+                        caracC = indices.map(i => caracArray[i]);
 
-                let muchasCarac = false
-                if (caracArray.length >= 10) {
-                    muchasCarac
-                }
-
-                if (!muchasCarac) {
-                    let peq = caracCont[0]
-                    for (let i = 0; i < caracCont.length; i++) {
-                        if (caracCont[i] < peq && caracCont[i] >= 3) {
-                            peq = caracArray[i]
+                        // Seleccionar 3 características aleatorias para filas (distintas a columnas)
+                        indices = [];
+                        while (indices.length < 3 && indices.length < caracArray.length) {
+                            let idx = Math.floor(Math.random() * caracArray.length);
+                            if (!indices.includes(idx) && !caracC.includes(caracArray[idx])) {
+                                indices.push(idx);
+                            }
                         }
+                        caracF = indices.map(i => caracArray[i]);
+
+                        // Si no hay suficientes características distintas, rellenar con las disponibles
+                        if (caracF.length < 3) {
+                            for (let carac of caracteristicas) {
+                                if (!caracC.includes(carac.id) && !caracF.includes(carac.id) && caracF.length < 3) {
+                                    caracF.push(carac.id);
+                                }
+                            }
+                        }
+
+                        if (caracC.length < 3 || caracF.length < 3) {
+                            console.log(`  ⚠️ No hay suficientes características distintas (C: ${caracC.length}, F: ${caracF.length})`);
+                            intentosCombinacion++;
+                            continue;
+                        }
+
+                        console.log(`  caracC: ${caracC}`);
+                        console.log(`  caracF: ${caracF}`);
+
+                        // Intentar llenar la tabla 3x3 con esta combinación
+                        let tabla = Array(9).fill(0);
+                        let combinacionValida = true;
+
+                        for (let fila = 0; fila < 3; fila++) {
+                            for (let col = 0; col < 3; col++) {
+                                const idx = fila * 3 + col;
+                                const caracFila = caracF[fila];
+                                const caracCol = caracC[col];
+
+                                // Buscar un objeto que tenga ambas características y no esté en la tabla
+                                let objValido = objetos.find(o =>
+                                    !tabla.includes(o.id) &&
+                                    o.objetoCaracteristicas.some(oc => oc.idCaracteristica === caracFila) &&
+                                    o.objetoCaracteristicas.some(oc => oc.idCaracteristica === caracCol)
+                                );
+
+                                if (objValido) {
+                                    tabla[idx] = objValido.id;
+                                    console.log(`    Celda [${idx}] (F${fila},C${col}): Objeto ${objValido.id} ✅`);
+                                } else {
+                                    console.log(`    Celda [${idx}] (F${fila},C${col}): ❌ No hay objeto válido`);
+                                    combinacionValida = false;
+                                    break;
+                                }
+                            }
+                            if (!combinacionValida) break;
+                        }
+
+                        if (combinacionValida) {
+                            console.log(`\n  ✅ COMBINACIÓN VÁLIDA ENCONTRADA`);
+                            console.log(`  caracC: ${caracC}`);
+                            console.log(`  caracF: ${caracF}`);
+                            console.log(`  tabla: ${tabla}`);
+
+                            // VALIDACIÓN FINAL
+                            let esValido = true;
+                            for (let i = 0; i < tabla.length; i++) {
+                                const objId = tabla[i];
+                                const filaIdx = Math.floor(i / 3);
+                                const colIdx = i % 3;
+                                const caracFila = caracF[filaIdx];
+                                const caracCol = caracC[colIdx];
+
+                                let objEncontrado = objetos.find(o => o.id === objId);
+                                if (!objEncontrado) {
+                                    esValido = false;
+                                    break;
+                                }
+
+                                const tieneCaracFila = objEncontrado.objetoCaracteristicas.some(oc => oc.idCaracteristica === caracFila);
+                                const tieneCaracCol = objEncontrado.objetoCaracteristicas.some(oc => oc.idCaracteristica === caracCol);
+
+                                if (!tieneCaracFila || !tieneCaracCol) {
+                                    esValido = false;
+                                    break;
+                                }
+                            }
+
+                            if (esValido) {
+                                console.log('\n✅ SUDOKU VALIDADO CORRECTAMENTE');
+                                sudokuCompleto = [caracC, caracF, tabla];
+                                break;
+                            }
+                        }
+
+                        intentosCombinacion++;
                     }
-                    caracC[0] = peq
-                    console.log('Carac 1', caracC[0])
 
-                    let objCaracPeq = []
+                    if (!sudokuCompleto && intentosCombinacion >= maxIntentosCombinacion) {
+                        throw new Error(`No se encontró una combinación válida después de ${maxIntentosCombinacion} intentos`);
+                    }
+
+                } else {
+                    // ALGORITMO ORIGINAL PARA CATEGORÍAS GRANDES
+                    console.log('🔍 USANDO ALGORITMO PARA CATEGORÍAS GRANDES');
+
+                    let caracC = Array(3).fill(0);
+                    let caracF = Array(3).fill(0);
+                    let tabla = Array(9).fill(0);
+
+                    let caracArray = caracteristicas.map(c => Number(c.id));
+                    console.log('Caracteristicas', caracArray);
+
+                    let caracCont = Array(caracArray.length).fill(0);
+
                     objetos.forEach(obj => {
-                        const intermedias = obj.objetoCaracteristicas
-
+                        const intermedias = obj.objetoCaracteristicas;
                         intermedias.forEach(oc => {
                             const idCar = Number(oc.idCaracteristica);
-                            if (idCar == peq) {
-                                objCaracPeq.push(oc.idObjetos)
+                            for (let i = 0; i < caracArray.length; i++) {
+                                if (idCar === caracArray[i]) {
+                                    caracCont[i]++;
+                                }
                             }
                         });
                     });
-                    let seleccionados
-                    let objElec
-                    let objElecNum
+
+                    console.log('Conteo de características:', caracCont);
+
+                    // Seleccionar la característica con al menos 3 objetos y menor cantidad
+                    let minIndex = -1;
+                    let minValue = Infinity;
+
+                    for (let i = 0; i < caracCont.length; i++) {
+                        if (caracCont[i] >= 3 && caracCont[i] < minValue) {
+                            minValue = caracCont[i];
+                            minIndex = i;
+                        }
+                    }
+
+                    if (minIndex === -1) {
+                        throw new Error("No hay características con al menos 3 objetos");
+                    }
+
+                    caracC[0] = caracArray[minIndex];
+                    console.log('Carac 1:', caracC[0], '(con', caracCont[minIndex], 'objetos)');
+
+                    let objCaracPeq = [];
+                    objetos.forEach(obj => {
+                        const intermedias = obj.objetoCaracteristicas;
+                        intermedias.forEach(oc => {
+                            const idCar = Number(oc.idCaracteristica);
+                            if (idCar == caracC[0]) {
+                                objCaracPeq.push(oc.idObjetos);
+                            }
+                        });
+                    });
+
+                    console.log('Objetos con carac 1:', objCaracPeq);
+
+                    let seleccionados;
+                    let objElec;
+                    let objElecNum;
 
                     if (objCaracPeq.length == 3) {
                         for (let i = 0; i < objCaracPeq.length; i++) {
-                            tabla[i * 3] = objCaracPeq[i]
+                            tabla[i * 3] = objCaracPeq[i];
                         }
-                    } else if (objCaracPeq.length < 3) throw new Error("Problema al colocar objetos de la 1º carac")
-                    else {
-                        console.log('Los objetos de la caracteristica ', objCaracPeq)
-                        let contCaracOCP = Array(objCaracPeq.length).fill(0)
+                        objElec = objCaracPeq;
+                        objElecNum = Array(3).fill(3);
+                        console.log('objElec (3 objetos):', objElec);
+                        console.log('objElecNum:', objElecNum);
+                    } else if (objCaracPeq.length < 3) {
+                        throw new Error("Problema al colocar objetos de la 1º carac");
+                    } else {
+                        console.log('Los objetos de la caracteristica ', objCaracPeq);
+                        let contCaracOCP = Array(objCaracPeq.length).fill(0);
                         objetos.forEach(obj => {
-                            const intermedias = obj.objetoCaracteristicas
+                            const intermedias = obj.objetoCaracteristicas;
                             intermedias.forEach(oc => {
                                 for (let i = 0; i < objCaracPeq.length; i++) {
                                     if (oc.idObjetos == objCaracPeq[i]) {
-                                        contCaracOCP[i]++
+                                        contCaracOCP[i]++;
                                     }
                                 }
                             });
                         });
-                        console.log('contCaracOCP', contCaracOCP)
+                        console.log('contCaracOCP', contCaracOCP);
 
                         let combinados = objCaracPeq.map((id, i) => ({ id, count: contCaracOCP[i] }));
                         combinados = combinados.filter(e => e.count >= 3);
@@ -275,7 +420,7 @@ class CategoriaConnection {
                         console.log('objElecNum', objElecNum);
 
                         for (let i = 0; i < objElec.length; i++) {
-                            tabla[i * 3] = objElec[i]
+                            tabla[i * 3] = objElec[i];
                         }
                     }
 
@@ -292,165 +437,161 @@ class CategoriaConnection {
                     console.log('👉 Elegido ID:', elegidoId);
                     console.log('👉 Elegido Num:', elegidoNum);
 
-                    let caracObjElegido = []
+                    let caracObjElegido = [];
                     objetos.forEach(obj => {
                         if (obj.id == elegidoId) {
-                            const intermedias = obj.objetoCaracteristicas
+                            const intermedias = obj.objetoCaracteristicas;
                             intermedias.forEach(oc => {
                                 if (oc.idCaracteristica != caracC[0]) {
-                                    caracObjElegido.push(oc.idCaracteristica)
+                                    caracObjElegido.push(oc.idCaracteristica);
                                 }
                             });
                         }
                     });
-                    console.log('caracObjElegido', caracObjElegido)
+                    console.log('caracObjElegido', caracObjElegido);
 
-                    let posicionfila1
+                    let posicionfila1;
                     for (let i = 0; i < tabla.length; i++) {
                         if (tabla[i] == elegidoId) {
-                            posicionfila1 = i / 3
+                            posicionfila1 = i / 3;
                         }
                     }
 
                     if (caracObjElegido.length == 1) {
-                        caracF[posicionfila1] = caracObjElegido[0]
+                        caracF[posicionfila1] = caracObjElegido[0];
                     } else {
-                        let caracRan = Math.floor(Math.random() * caracObjElegido.length)
-                        caracF[posicionfila1] = caracObjElegido[caracRan]
+                        let caracRan = Math.floor(Math.random() * caracObjElegido.length);
+                        caracF[posicionfila1] = caracObjElegido[caracRan];
                     }
-                    console.log(caracC)
-                    console.log(caracF)
-                    console.log(tabla)
+                    console.log(caracC);
+                    console.log(caracF);
+                    console.log(tabla);
 
-                    let posiblesObjNuevos = []
+                    let posiblesObjNuevos = [];
                     objetos.forEach(obj => {
-                        const intermedias = obj.objetoCaracteristicas
+                        const intermedias = obj.objetoCaracteristicas;
                         intermedias.forEach(oc => {
                             if (oc.idCaracteristica == caracF[posicionfila1] && oc.idObjetos != tabla[0] && oc.idObjetos != tabla[3] && oc.idObjetos != tabla[6]) {
-                                posiblesObjNuevos.push(oc.idObjetos)
+                                posiblesObjNuevos.push(oc.idObjetos);
                             }
                         });
-
                     });
-                    console.log('posiblesObjNuevos', posiblesObjNuevos)
+                    console.log('posiblesObjNuevos', posiblesObjNuevos);
 
                     if (posiblesObjNuevos.length < 2) throw new Error("Hay un error a la hora de colocar los objetos de la 2º caracteristica elegida");
                     else if (posiblesObjNuevos.length == 2) {
                         for (let i = 0; i < tabla.length; i++) {
                             if (tabla[i] == elegidoId) {
-                                tabla[i + 1] = posiblesObjNuevos[0]
-                                tabla[i + 2] = posiblesObjNuevos[1]
+                                tabla[i + 1] = posiblesObjNuevos[0];
+                                tabla[i + 2] = posiblesObjNuevos[1];
                             }
                         }
                     } else {
-                        let objElecSinElec = objElec
-                        objElecSinElec = objElecSinElec.filter(oe => oe !== elegidoId)
-                        console.log('objElecSinElec', objElecSinElec)
+                        let objElecSinElec = objElec.filter(oe => oe !== elegidoId);
+                        console.log('objElecSinElec', objElecSinElec);
 
-                        let caracOESE1 = []
+                        let caracOESE1 = [];
                         objetos.forEach(obj => {
                             if (obj.id == objElecSinElec[0]) {
-                                const intermedias = obj.objetoCaracteristicas
+                                const intermedias = obj.objetoCaracteristicas;
                                 intermedias.forEach(oc => {
                                     if (oc.idCaracteristica != caracC[0] && oc.idCaracteristica != caracF[0] && oc.idCaracteristica != caracF[1] && oc.idCaracteristica != caracF[2]) {
-                                        caracOESE1.push(oc.idCaracteristica)
+                                        caracOESE1.push(oc.idCaracteristica);
                                     }
                                 });
                             }
                         });
 
-                        let caracOESE2 = []
+                        let caracOESE2 = [];
                         objetos.forEach(obj => {
                             if (obj.id == objElecSinElec[1]) {
-                                const intermedias = obj.objetoCaracteristicas
+                                const intermedias = obj.objetoCaracteristicas;
                                 intermedias.forEach(oc => {
                                     if (oc.idCaracteristica != caracC[0] && oc.idCaracteristica != caracF[0] && oc.idCaracteristica != caracF[1] && oc.idCaracteristica != caracF[2]) {
-                                        caracOESE2.push(oc.idCaracteristica)
+                                        caracOESE2.push(oc.idCaracteristica);
                                     }
                                 });
                             }
                         });
 
-                        console.log('caracOESE1', caracOESE1)
-                        console.log('caracOESE2', caracOESE2)
-
-                        console.log(posicionfila1)
+                        console.log('caracOESE1', caracOESE1);
+                        console.log('caracOESE2', caracOESE2);
+                        console.log(posicionfila1);
 
                         objetos.forEach(obj => {
-                            const intermedias = obj.objetoCaracteristicas
+                            const intermedias = obj.objetoCaracteristicas;
                             for (let i = 0; i < posiblesObjNuevos.length; i++) {
                                 if (obj.id == posiblesObjNuevos[i]) {
-                                    let caracSinUsadas = []
+                                    let caracSinUsadas = [];
                                     intermedias.forEach(oc => {
                                         if (oc.idObjetos == posiblesObjNuevos[i] && oc.idCaracteristica != caracF[0] && oc.idCaracteristica != caracF[1] && oc.idCaracteristica != caracF[2] && oc.idCaracteristica != caracC[0]) {
-                                            caracSinUsadas.push(oc.idCaracteristica)
+                                            caracSinUsadas.push(oc.idCaracteristica);
                                         }
-                                    })
-                                    console.log(posiblesObjNuevos[i])
-                                    console.log(caracSinUsadas)
+                                    });
+                                    console.log(posiblesObjNuevos[i]);
+                                    console.log(caracSinUsadas);
                                     caracSinUsadas.forEach(csu => {
                                         for (let j = 0; j < caracOESE1.length; j++) {
                                             for (let l = 0; l < caracOESE2.length; l++) {
                                                 if ((csu != caracOESE1[j]) && (csu != caracOESE2[l])) {
-                                                    tabla[posicionfila1 + 1] = posiblesObjNuevos[i]
-                                                    caracC[1] = csu
+                                                    tabla[posicionfila1 * 3 + 1] = posiblesObjNuevos[i];
+                                                    caracC[1] = csu;
                                                     if (posicionfila1 == 0) {
-                                                        caracF[1] = caracOESE1[j]
-                                                        caracF[2] = caracOESE2[l]
-                                                    } else if (posicionfila1 == 3) {
-                                                        caracF[0] = caracOESE1[j]
-                                                        caracF[2] = caracOESE2[l]
-                                                    } else if (posicionfila1 == 6) {
-                                                        caracF[0] = caracOESE1[j]
-                                                        caracF[1] = caracOESE2[l]
+                                                        caracF[1] = caracOESE1[j];
+                                                        caracF[2] = caracOESE2[l];
+                                                    } else if (posicionfila1 == 1) {
+                                                        caracF[0] = caracOESE1[j];
+                                                        caracF[2] = caracOESE2[l];
+                                                    } else if (posicionfila1 == 2) {
+                                                        caracF[0] = caracOESE1[j];
+                                                        caracF[1] = caracOESE2[l];
                                                     }
                                                 }
                                             }
                                         }
-                                    })
+                                    });
                                 }
                             }
-                        })
-                        console.log('caracC', caracC)
-                        console.log('caracF', caracF)
-                        console.log('tabla', tabla)
+                        });
+                        console.log('caracC', caracC);
+                        console.log('caracF', caracF);
+                        console.log('tabla', tabla);
 
                         objetos.forEach(obj => {
-                            const intermedias = obj.objetoCaracteristicas
+                            const intermedias = obj.objetoCaracteristicas;
                             intermedias.forEach(oc => {
                                 if (oc.idCaracteristica == caracC[1] && !tabla.includes(oc.idObjetos)) {
                                     intermedias.forEach(oc1 => {
                                         if (oc1.idCaracteristica == caracF[1]) {
-                                            tabla[4] = oc1.idObjetos
+                                            tabla[4] = oc1.idObjetos;
                                         }
-                                    })
+                                    });
                                 }
                             });
                         });
 
                         objetos.forEach(obj => {
-                            const intermedias = obj.objetoCaracteristicas
+                            const intermedias = obj.objetoCaracteristicas;
                             intermedias.forEach(oc => {
                                 if (oc.idCaracteristica == caracC[1] && !tabla.includes(oc.idObjetos)) {
                                     intermedias.forEach(oc1 => {
                                         if (oc1.idCaracteristica == caracF[2]) {
-                                            tabla[7] = oc1.idObjetos
+                                            tabla[7] = oc1.idObjetos;
                                         }
-                                    })
+                                    });
                                 }
                             });
                         });
-                        console.log('tabla1', tabla)
+                        console.log('tabla1', tabla);
 
-                        let idsCarac = []
+                        let idsCarac = [];
                         caracteristicas.forEach(carac => {
                             if (!caracC.includes(carac.id) && !caracF.includes(carac.id)) {
-                                idsCarac.push(carac.id)
+                                idsCarac.push(carac.id);
                             }
-                        })
+                        });
 
                         const conteo = {};
-
                         for (const obj of categoria.objetos) {
                             for (const oc of obj.objetoCaracteristicas) {
                                 const id = oc.idCaracteristica;
@@ -459,11 +600,11 @@ class CategoriaConnection {
                         }
 
                         const ultimasCarac = idsCarac.filter(id => conteo[id] >= 3);
-                        console.log(ultimasCarac)
+                        console.log(ultimasCarac);
 
                         ultimasCarac.forEach(caracFinal => {
                             objetos.forEach(obj => {
-                                const intermedias = obj.objetoCaracteristicas
+                                const intermedias = obj.objetoCaracteristicas;
                                 intermedias.forEach(oc => {
                                     if (oc.idCaracteristica == caracFinal && !tabla.includes(oc.idObjetos)) {
                                         intermedias.forEach(oc1 => {
@@ -472,60 +613,60 @@ class CategoriaConnection {
                                                     if (oc2.idCaracteristica == caracF[1]) {
                                                         intermedias.forEach(oc3 => {
                                                             if (oc3.idCaracteristica == caracF[2]) {
-                                                                caracC[2] = caracFinal
+                                                                caracC[2] = caracFinal;
                                                             }
-                                                        })
+                                                        });
                                                     }
-                                                })
+                                                });
                                             }
-                                        })
+                                        });
                                     }
                                 });
                             });
-                        })
-                        console.log(caracC)
-                        console.log(caracF)
+                        });
+                        console.log(caracC);
+                        console.log(caracF);
 
                         objetos.forEach(obj => {
-                            const intermedias = obj.objetoCaracteristicas
+                            const intermedias = obj.objetoCaracteristicas;
                             intermedias.forEach(oc => {
                                 if (oc.idCaracteristica == caracC[2] && !tabla.includes(oc.idObjetos)) {
                                     intermedias.forEach(oc1 => {
                                         if (oc1.idCaracteristica == caracF[0]) {
-                                            tabla[2] = oc1.idObjetos
+                                            tabla[2] = oc1.idObjetos;
                                         }
-                                    })
+                                    });
                                 }
                             });
                         });
 
                         objetos.forEach(obj => {
-                            const intermedias = obj.objetoCaracteristicas
+                            const intermedias = obj.objetoCaracteristicas;
                             intermedias.forEach(oc => {
                                 if (oc.idCaracteristica == caracC[2] && !tabla.includes(oc.idObjetos)) {
                                     intermedias.forEach(oc1 => {
                                         if (oc1.idCaracteristica == caracF[1]) {
-                                            tabla[5] = oc1.idObjetos
+                                            tabla[5] = oc1.idObjetos;
                                         }
-                                    })
+                                    });
                                 }
                             });
                         });
 
                         objetos.forEach(obj => {
-                            const intermedias = obj.objetoCaracteristicas
+                            const intermedias = obj.objetoCaracteristicas;
                             intermedias.forEach(oc => {
                                 if (oc.idCaracteristica == caracC[2] && !tabla.includes(oc.idObjetos)) {
                                     intermedias.forEach(oc1 => {
                                         if (oc1.idCaracteristica == caracF[2]) {
-                                            tabla[8] = oc1.idObjetos
+                                            tabla[8] = oc1.idObjetos;
                                         }
-                                    })
+                                    });
                                 }
                             });
                         });
 
-                        console.log('tabla pre-fix', tabla)
+                        console.log('tabla pre-fix', tabla);
 
                         caracC = caracC.filter(c => c !== 0);
                         caracF = caracF.filter(c => c !== 0);
@@ -555,7 +696,7 @@ class CategoriaConnection {
                             }
                         }
 
-                        console.log('tabla post-fix', tabla)
+                        console.log('tabla post-fix', tabla);
                     }
 
                     // VALIDACIÓN Y CORRECCIÓN DEL SUDOKU
@@ -567,7 +708,6 @@ class CategoriaConnection {
                         console.log(`\n🔍 INTENTO DE VALIDACIÓN ${intentos + 1}/${maxIntentos}`);
                         sudokuValido = true;
 
-                        // Recorrer cada celda de la tabla
                         for (let i = 0; i < tabla.length; i++) {
                             const objId = tabla[i];
                             const filaIdx = Math.floor(i / 3);
@@ -577,7 +717,6 @@ class CategoriaConnection {
 
                             console.log(`Celda [${i}] (Fila ${filaIdx}, Col ${colIdx}): Objeto ${objId}, caracF=${caracFila}, caracC=${caracCol}`);
 
-                            // PASO 1: Verificar si el objeto tiene ambas características
                             let objEncontrado = objetos.find(o => o.id === objId);
                             if (!objEncontrado) {
                                 console.log(`❌ Objeto ${objId} no existe`);
@@ -592,7 +731,6 @@ class CategoriaConnection {
                                 console.log(`❌ Objeto ${objId} no tiene ambas características (Fila: ${tieneCaracFila}, Col: ${tieneCaracCol})`);
                                 sudokuValido = false;
 
-                                // PASO 1: Intentar buscar un objeto que tenga ambas características
                                 let objValido = objetos.find(o =>
                                     !tabla.includes(o.id) &&
                                     o.objetoCaracteristicas.some(oc => oc.idCaracteristica === caracFila) &&
@@ -605,10 +743,8 @@ class CategoriaConnection {
                                 } else {
                                     console.log(`⚠️ No hay objeto válido para esta combinación. Intentando cambiar fila o columna...`);
 
-                                    // PASO 2: Si no hay objeto válido, cambiar la característica de fila o columna
                                     let encontroAlternativa = false;
 
-                                    // Intentar cambiar la característica de columna
                                     for (let c of caracteristicas) {
                                         if (!caracC.includes(c.id) && !caracF.includes(c.id)) {
                                             const conteoCarac = objetos.filter(o =>
@@ -634,7 +770,6 @@ class CategoriaConnection {
                                     }
 
                                     if (!encontroAlternativa) {
-                                        // Intentar cambiar la característica de fila
                                         for (let c of caracteristicas) {
                                             if (!caracC.includes(c.id) && !caracF.includes(c.id)) {
                                                 const conteoCarac = objetos.filter(o =>
@@ -684,9 +819,6 @@ class CategoriaConnection {
                     console.log('tabla Final:', tabla);
 
                     sudokuCompleto = [caracC, caracF, tabla];
-
-                } else {
-                    throw new Error("Demasiadas características");
                 }
 
             } catch (error) {
