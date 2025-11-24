@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Categoria } from '../../../interface/categoria';
 import { CategoriaService } from '../../../service/categoria.service';
+import { CaracteristicaService } from '../../../service/caracteristica.service';
 
 @Component({
   selector: 'app-resolver-puzzle',
@@ -16,6 +17,7 @@ export class ResolverPuzzle implements OnInit {
   selectedCategoriaId: number | null = null;
 
   objetos: any[] = [];
+  caracteristicas: any[] = [];
   caracC: number[] = [];
   caracF: number[] = [];
   tabla: number[] = Array(9).fill(0);
@@ -26,7 +28,8 @@ export class ResolverPuzzle implements OnInit {
 
   constructor(
     private categoriaService: CategoriaService,
-    private objetoService: ObjetoService
+    private objetoService: ObjetoService,
+    private caracteristicaService: CaracteristicaService
   ) { }
 
   ngOnInit() {
@@ -50,12 +53,26 @@ export class ResolverPuzzle implements OnInit {
     this.caracF = [];
     this.tabla = Array(9).fill(0);
     this.objetos = [];
+    this.caracteristicas = [];
     this.resultado = null;
     this.error = '';
 
     if (!this.selectedCategoriaId) return;
 
     this.cargando = true;
+
+    this.caracteristicaService.getCaracteristicasPorCategoria(this.selectedCategoriaId).subscribe({
+      next: (response: any) => {
+        this.caracteristicas = (response && Array.isArray(response.caracteristica))
+          ? response.caracteristica
+          : [];
+        console.log('Características cargadas:', this.caracteristicas);
+      },
+      error: (err) => {
+        console.error('Error al cargar características:', err);
+        this.caracteristicas = [];
+      }
+    });
 
     this.objetoService.getObjetosPorCategoria(this.selectedCategoriaId).subscribe({
       next: (response: any) => {
@@ -125,8 +142,14 @@ export class ResolverPuzzle implements OnInit {
       }
     });
   }
+
   opcionesObjetos() {
     return this.objetos.map(o => ({ id: o.id, nombre: o.nombre || (`Objeto ${o.id}`) }));
+  }
+
+  nombreCaracteristica(id: number): string {
+    const carac = this.caracteristicas.find(c => c.id === id);
+    return carac ? carac.nombre : `Característica ${id}`;
   }
 
   finalizarSudoku() {
@@ -168,7 +191,7 @@ export class ResolverPuzzle implements OnInit {
 
     this.categoriaService.resolverSudoku(usuarioId, this.caracC, this.caracF, this.tabla).subscribe({
       next: (res: any) => {
-        console.log('res',res.body.Categoria)
+        console.log('res', res.body.Categoria)
         this.resultado = res.body.Categoria;
         this.cargando = false;
       },
@@ -179,6 +202,7 @@ export class ResolverPuzzle implements OnInit {
       }
     });
   }
+
   nombreObjetoPorId(id: number) {
     const o = this.objetos.find(x => x.id === id);
     return o ? (o.nombre || `Objeto ${o.id}`) : '';

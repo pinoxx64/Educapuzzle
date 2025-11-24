@@ -28,31 +28,44 @@ import { ObjetoService } from '../../../../service/objeto.service';
 export class EditarObjetoComponent implements OnInit, OnChanges {
   @Input() visible: boolean = false;
   @Input() objeto: Objeto | null = null;
+  @Input() idCategoria: number | null = null;
 
   @Output() onClose = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<{ objeto: Objeto; caracteristicas: ObjetoCaracteristica[] }>();
 
   nombre: string = '';
-
   caracteristicasSeleccionadas: { idCaracteristica: number | null; uid: string }[] = [];
-
-  allCaracteristicas: Caracteristica[] = [];
-
+  allCaracteristicas: any[] = []; // ← Inicializa como array vacío
   erMensaje: string | null = null;
 
   constructor(
     private caracteristicaService: CaracteristicaService,
     private objetoService: ObjetoService,
     private objetoCaracteristicaService: ObjetoCaracteristicaService
-  ) { }
+  ) { 
+    // Inicializar arrays
+    this.allCaracteristicas = [];
+    this.resetCaracteristicas();
+  }
 
   ngOnInit() {
-    this.cargarCatalogoCaracteristicas();
+    console.log('ngOnInit - idCategoria:', this.idCategoria);
+    if (this.idCategoria) {
+      this.cargarCatalogoCaracteristicas();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log('ngOnChanges - changes:', changes);
+
+    if (changes['idCategoria'] && this.idCategoria) {
+      console.log('Cambió idCategoria a:', this.idCategoria);
+      this.cargarCatalogoCaracteristicas();
+    }
+
     if (changes['objeto'] && this.objeto) {
-      this.nombre = this.objeto.nombre;
+      console.log('Cambió objeto a:', this.objeto);
+      this.nombre = this.objeto.nombre || '';
       this.loadObjetoCaracteristicas();
     }
 
@@ -61,15 +74,82 @@ export class EditarObjetoComponent implements OnInit, OnChanges {
     }
   }
 
+  // private cargarCatalogoCaracteristicas() {
+  //   if (!this.idCategoria) {
+  //     console.warn('No hay idCategoria para cargar características');
+  //     this.allCaracteristicas = [];
+  //     return;
+  //   }
+
+  //   console.log('Cargando características para categoría:', this.idCategoria);
+  //   this.caracteristicaService.getCaracteristicasPorCategoria(this.idCategoria).subscribe({
+  //     next: (response: any) => {
+  //       console.log('Respuesta de características:', response);
+        
+  //       // Maneja diferentes formatos de respuesta
+  //       let caracteristicas: any[] = [];
+        
+  //       if (Array.isArray(response)) {
+  //         console.log('1')
+  //         caracteristicas = response;
+  //       } else if (response && Array.isArray(response.caracteristicas)) {
+  //         console.log('2')
+  //         caracteristicas = response.caracteristicas;
+  //       } else if (response && response.data && Array.isArray(response.data)) {
+  //         console.log('3')
+  //         caracteristicas = response.data;
+  //       }
+  //        console.log('carac ya en front', caracteristicas)
+        
+  //       this.allCaracteristicas = caracteristicas || [];
+  //       console.log('allCaracteristicas asignadas:', this.allCaracteristicas);
+  //     },
+  //     error: (err: any) => {
+  //       console.error('Error cargando catálogo de características:', err);
+  //       this.allCaracteristicas = [];
+  //     }
+  //   });
+  // }
   private cargarCatalogoCaracteristicas() {
-    this.caracteristicaService.getCaracteristicas().subscribe({
-      next: list => (this.allCaracteristicas = list || []),
-      error: err => {
-        console.error('Error cargando catálogo de características', err);
-        this.allCaracteristicas = [];
-      }
-    });
+  if (!this.idCategoria) {
+    console.warn('No hay idCategoria para cargar características');
+    this.allCaracteristicas = [];
+    return;
   }
+
+  console.log('Cargando características para categoría:', this.idCategoria);
+  this.caracteristicaService.getCaracteristicasPorCategoria(this.idCategoria).subscribe({
+    next: (response: any) => {
+      console.log('Respuesta de características:', response);
+      
+      // Maneja diferentes formatos de respuesta
+      let caracteristicas: any[] = [];
+      
+      if (Array.isArray(response)) {
+        console.log('Formato 1: Array directo');
+        caracteristicas = response;
+      } else if (response && Array.isArray(response.caracteristica)) {
+        console.log('Formato 2: response.caracteristica (SINGULAR)');
+        caracteristicas = response.caracteristica;
+      } else if (response && Array.isArray(response.caracteristicas)) {
+        console.log('Formato 3: response.caracteristicas (PLURAL)');
+        caracteristicas = response.caracteristicas;
+      } else if (response && response.data && Array.isArray(response.data)) {
+        console.log('Formato 4: response.data');
+        caracteristicas = response.data;
+      }
+      
+      console.log('Características extraídas:', caracteristicas);
+      
+      this.allCaracteristicas = caracteristicas || [];
+      console.log('allCaracteristicas asignadas:', this.allCaracteristicas);
+    },
+    error: (err: any) => {
+      console.error('Error cargando catálogo de características:', err);
+      this.allCaracteristicas = [];
+    }
+  });
+}
 
   private loadObjetoCaracteristicas() {
     if (!this.objeto) {
@@ -79,12 +159,13 @@ export class EditarObjetoComponent implements OnInit, OnChanges {
 
     this.objetoService.getCaracteristicasPorObjeto(this.objeto.id).subscribe({
       next: (resp: any) => {
-
         let lista: any[] = [];
 
-        if (Array.isArray(resp)) lista = resp;
-        else if (resp && Array.isArray(resp.objeto)) lista = resp.objeto;
-        else {
+        if (Array.isArray(resp)) {
+          lista = resp;
+        } else if (resp && Array.isArray(resp.objeto)) {
+          lista = resp.objeto;
+        } else {
           const found = Object.values(resp).find(v => Array.isArray(v));
           if (Array.isArray(found)) lista = found as any[];
         }
@@ -102,8 +183,8 @@ export class EditarObjetoComponent implements OnInit, OnChanges {
           this.caracteristicasSeleccionadas.push({ idCaracteristica: null, uid: this.newUid() });
         }
       },
-      error: err => {
-        console.error('No se pudieron cargar relaciones objeto-característica:', err);
+      error: (err: any) => {
+        console.error('Error cargando características del objeto:', err);
         this.resetCaracteristicas();
       }
     });
@@ -116,7 +197,7 @@ export class EditarObjetoComponent implements OnInit, OnChanges {
     ];
   }
 
-  private newUid() {
+  private newUid(): string {
     return Math.random().toString(36).slice(2, 9);
   }
 
@@ -141,7 +222,9 @@ export class EditarObjetoComponent implements OnInit, OnChanges {
       return false;
     }
 
-    const ids = this.caracteristicasSeleccionadas.map(c => c.idCaracteristica).filter(x => x !== null && x !== undefined) as number[];
+    const ids = this.caracteristicasSeleccionadas
+      .map(c => c.idCaracteristica)
+      .filter(x => x !== null && x !== undefined) as number[];
 
     if (ids.length < 2) {
       this.erMensaje = 'Debe seleccionar al menos 2 características.';
@@ -155,7 +238,7 @@ export class EditarObjetoComponent implements OnInit, OnChanges {
     }
 
     if (this.caracteristicasSeleccionadas.some(c => c.idCaracteristica === null || c.idCaracteristica === undefined)) {
-      this.erMensaje = 'Debe seleccionar una característica en cada select o eliminar la fila.';
+      this.erMensaje = 'Debe seleccionar una característica en cada select.';
       return false;
     }
 
@@ -176,19 +259,17 @@ export class EditarObjetoComponent implements OnInit, OnChanges {
     };
 
     this.objetoService.putObjeto(objetoActualizado).subscribe({
-      next: resp => {
-        console.log('Objeto actualizado', resp);
-
+      next: () => {
         this.objetoCaracteristicaService.getPorObjeto(this.objeto!.id).subscribe({
-          next: relacionesPrevias => {
-            const deletes = relacionesPrevias.map(r =>
+          next: (relacionesPrevias: any) => {
+            const deletes = relacionesPrevias.map((r: any) =>
               this.objetoCaracteristicaService.deleteRelacion(
-                r.idObjeto ?? r.idObjeto ?? this.objeto!.id,
+                r.idObjeto ?? this.objeto!.id,
                 r.idCaracteristica
               )
             );
 
-            Promise.all(deletes.map(d => d.toPromise()))
+            Promise.all(deletes.map((d: { toPromise: () => any; }) => d.toPromise()))
               .then(() => {
                 const posts = caracteristicasPayload.map(c =>
                   this.objetoCaracteristicaService.postRelacion({
@@ -196,32 +277,25 @@ export class EditarObjetoComponent implements OnInit, OnChanges {
                     idCaracteristica: c.idCaracteristica
                   }).toPromise()
                 );
-
                 return Promise.all(posts);
               })
               .then(() => {
-                console.log('Características actualizadas correctamente');
                 this.onSave.emit({ objeto: objetoActualizado, caracteristicas: caracteristicasPayload });
                 this.onClose.emit();
               })
-              .catch(err => {
+              .catch((err: any) => {
                 console.error('Error al guardar características:', err);
                 this.erMensaje = 'Error al guardar las características.';
               });
-          },
-          error: err => {
-            console.error('Error obteniendo relaciones previas:', err);
-            this.erMensaje = 'Error al cargar relaciones previas.';
           }
         });
       },
-      error: err => {
+      error: (err: any) => {
         console.error('Error actualizando objeto:', err);
         this.erMensaje = 'Error al guardar el objeto.';
       }
     });
   }
-
 
   cerrar() {
     this.onClose.emit();

@@ -11,6 +11,6 @@ router.post('/', [validJWT], CategoriaController.funPostCategoria)
 router.put('/:id', [validJWT], CategoriaController.funPutCategoria)
 router.delete('/:id', [validJWT], CategoriaController.funDeleteCategoria)
 
-router.get('/funcion/:id', [validJWT], CategoriaController.funComprobarSiEsFuncional)
+router.get('/funcion/:id', /*[validJWT],*/ CategoriaController.funComprobarSiEsFuncional)
 router.get('/sudoku/:id', [validJWT], CategoriaController.funCrearSudoku)
 router.post('/resolverSudoku/:id', [validJWT], CategoriaController.funResolucionSudoku)
