@@ -157,7 +157,7 @@ class CategoriaConnection {
             }
         }
 
-        if (contC < 6) throw new Error("Los caracteristicas no cubren a los suficientes objetos");
+        if (contC < 6) throw new Error("Los caracteristicas no cubren a los suficientes objetos (Accede a objetos -> editar para añadir caracteristicas)");
         return "Se pueden generar Sudokus";
     };
 
@@ -190,12 +190,12 @@ class CategoriaConnection {
                 const caracteristicas = categoria.caracteristicas;
 
                 // algoritmo cat pequeñas (objetos <= 12 y carac <= 10)
-                if (objetos.length <= 12 && caracteristicas.length <= 10) {
+                //if (objetos.length <= 12 && caracteristicas.length <= 10) {
 
                     let caracArray = caracteristicas.map(c => Number(c.id));
                     let sudokuValido = false;
                     let intentosCombinacion = 0;
-                    const maxIntentosCombinacion = 20;
+                    const maxIntentosCombinacion = 150;
 
                     while (intentosCombinacion < maxIntentosCombinacion && !sudokuValido) {
 
@@ -308,7 +308,7 @@ class CategoriaConnection {
                         throw new Error(`No se encontró una combinación válida después de ${maxIntentosCombinacion} intentos`);
                     }
 
-                } else {
+                /*} else {
                     // algoritmo cat grandes
 
                     let caracC = Array(3).fill(0);
@@ -805,7 +805,7 @@ class CategoriaConnection {
                     console.log('tabla Final:', tabla);
 
                     sudokuCompleto = [caracC, caracF, tabla];
-                }
+                }*/
 
             } catch (error) {
                 intentosGenerales++;
