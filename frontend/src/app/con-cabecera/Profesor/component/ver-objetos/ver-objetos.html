@@ -19,7 +19,7 @@
         <td>
           <button pButton type="button" label="Editar" icon="pi pi-pencil" (click)="abrirEditarObj(objeto)"></button>
           <button pButton type="button" label="Eliminar" severity="danger" icon="pi pi-trash" class="p-button-text"
-            (click)="deleteObj($event, objeto.id)"></button>
+            (click)="deleteObj(objeto.id)"></button>
         </td>
       </tr>
     </ng-template>
@@ -27,7 +27,7 @@
 
   <app-crear-objeto
     [visible]="dialogCrearVisible"
-    [idCategoria]="categoria?.id"
+    [idCategoria]="categoria?.id ?? undefined"
     (onClose)="cerrarCrearObj()"
     (onSave)="guardarNuevaObjeto($event)">
   </app-crear-objeto>
@@ -35,6 +35,7 @@
   <app-editar-objeto
     [visible]="dialogEditarVisible"
     [objeto]="objetoAEditar"
+    [idCategoria]="categoria?.id ?? null"
     (onClose)="cerrarEditarObj()"
     (onSave)="guardarEdicionObjeto($event)">
   </app-editar-objeto>

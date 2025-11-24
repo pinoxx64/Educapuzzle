@@ -220,18 +220,17 @@ guardarNuevaObjeto(nuevo: Partial<Objeto>) {
 // }
 
 
-  deleteObj(event: MouseEvent, id: number) {
-    const target = event.currentTarget as HTMLElement;
-    this.confirmationService.confirm({
-      target,
-      message: '¿Seguro que quieres eliminar este objeto?',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.objetoService.deleteObjeto(id).subscribe({
-          next: () => { this.cargarObjetos(); },
-          error: err => console.error('Error borrando objeto:', err)
-        });
-      }
-    });
-  }
+deleteObj(id: number) {
+  this.confirmationService.confirm({
+    message: '¿Seguro que quieres eliminar este objeto?',
+    icon: 'pi pi-exclamation-triangle',
+    acceptLabel: 'Sí',
+    rejectLabel: 'No',
+    accept: () => {
+      this.objetoService.deleteObjeto(id).subscribe(() => {
+        this.cargarObjetos();
+      });
+    }
+  });
+}
 }

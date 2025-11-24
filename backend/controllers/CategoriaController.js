@@ -100,6 +100,57 @@ const CategoriaController = {
                 })
             })
     },
+
+    funComprobarSiEsFuncional: (req, res) => {
+        conn.comprobarSiEsFuncional(req.params.id)
+            .then(Categoria => {
+                res.status(200).json({
+                    status: 200,
+                    message: "Categoria funciona correctamente",
+                    Categoria: Categoria
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    status: 500,
+                    message: err.message
+                })
+            })
+    },
+
+    funCrearSudoku: (req, res) => {
+        conn.crearSudoku(req.params.id)
+            .then(Categoria => {
+                res.status(200).json({
+                    status: 200,
+                    message: "Sudoku creado correctamente",
+                    Categoria: Categoria
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    status: 500,
+                    message: err.message
+                })
+            })
+    },
+
+    funResolucionSudoku: (req, res) => {
+        conn.verResolucionSudoku(req.body.caracF, req.body.caracC, req.body.tabla, req.params.id)
+            .then(Categoria => {
+                res.status(200).json({
+                    status: 200,
+                    message: "Resolucion funciona correctamente",
+                    Categoria: Categoria
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    status: 500,
+                    message: err.message
+                })
+            })
+    },
 }
 
 export default CategoriaController
