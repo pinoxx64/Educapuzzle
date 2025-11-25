@@ -1,0 +1,26 @@
+<div class="simple-foro">
+  <div class="mensajes" id="mensajes" role="log" aria-live="polite">
+    <div *ngFor="let msg of mensajes" class="mensaje">
+      <div class="meta">
+        <strong>{{ msg.usu }}</strong>
+      </div>
+      <div class="texto">{{ msg.mensaje }}</div>
+    </div>
+
+    <div *ngIf="mensajes.length === 0" class="sin-mensajes">
+      <em style="color: black;">No hay mensajes aún.</em>
+    </div>
+  </div>
+
+  <div class="barra-escribir">
+    <textarea
+      [(ngModel)]="nuevaRespuesta"
+      placeholder="Escribe tu mensaje..."
+      (keydown.enter)="enviarRespuesta(); $event.preventDefault();"
+      rows="1"
+      class="input-mensaje"
+      aria-label="Escribe tu mensaje">
+    </textarea>
+    <button (click)="enviarRespuesta()" class="btn-enviar" aria-label="Enviar">Enviar</button>
+  </div>
+</div>
