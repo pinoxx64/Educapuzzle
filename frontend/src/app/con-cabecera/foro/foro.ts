@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Chat, ChatResponse } from '../../interface/chat';
+import { ChatService } from '../../service/chat.service';
+import { WebsocketService } from '../../service/websocket.service';
 
 @Component({
   selector: 'app-foro',
@@ -11,75 +12,99 @@ import { Chat, ChatResponse } from '../../interface/chat';
   templateUrl: './foro.html',
   styleUrl: './foro.css',
 })
+
 export class Foro implements OnInit, OnDestroy {
   mensajes: Chat[] = [];
   nuevaRespuesta: string = '';
-  pollIntervalMs = 3000;
-  private pollId: any = null;
   usuario: any;
+  private subscriptions: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private chatService: ChatService,
+    private websocketService: WebsocketService
+  ) { }
 
   ngOnInit(): void {
-    this.cargarMensajes();
-    this.pollId = setInterval(() => this.cargarMensajes(), this.pollIntervalMs);
+    this.cargarMensajesInicial();
+    this.conectarWebSocket();
   }
 
   ngOnDestroy(): void {
-    if (this.pollId) clearInterval(this.pollId);
+    this.subscriptions.forEach(sub => sub.unsubscribe?.());
   }
 
-  cargarMensajes(): void {
-    this.http.get<Chat[]>('/api/chats')
-      .subscribe({
-        next: data => {
-          this.mensajes = (data || []).sort((a, b) => a.id - b.id);
-          this.scrollAlFinal();
-        },
-        error: err => console.error('Error cargando chats', err)
-      });
+  cargarMensajesInicial(): void {
+    const sub = this.chatService.getMensajes().subscribe({
+      next: (data: any) => {
+        console.log("data de getMensaje", data);
+        const dataBody = data.body.chat
+        let chats: Chat[] = [];
+        chats = dataBody;
+        this.mensajes = chats
+        this.scrollAlFinal();
+      },
+      error: err => console.error('Error cargando chats iniciales', err)
+    });
+    this.subscriptions.push(sub);
+  }
+
+  conectarWebSocket(): void {
+    const sub = this.websocketService.getMensajes().subscribe({
+      next: (nuevosMensajes: Chat[]) => {
+        console.log('Mensaje recibido por WebSocket:', nuevosMensajes);
+        this.mensajes = nuevosMensajes
+        this.scrollAlFinal();
+      },
+      error: err => console.error('Error en WebSocket', err)
+    });
+    this.subscriptions.push(sub);
   }
 
   enviarRespuesta(): void {
     const texto = (this.nuevaRespuesta || '').trim();
     if (!texto) return;
+
     const usuarioActual = sessionStorage.getItem('user');
     this.usuario = usuarioActual ? JSON.parse(usuarioActual) : { id: 0 };
-    const payload = { usuId: this.usuario.id, mensaje: texto };
-    console.log(payload);
 
-    this.http.post<ChatResponse>('/api/chats', payload)
-      .subscribe({
-        next: resp => {
-          // Si el backend responde con { chat: Chat } (ChatResponse)
-          if ((resp as any)?.chat) {
-            this.mensajes.push((resp as any).chat);
-          } else if ((resp as any)?.id) {
-            // Por compatibilidad: el backend podría devolver directamente el Chat
-            this.mensajes.push(resp as any as Chat);
-          } else {
-            // fallback: recargar lista
-            this.cargarMensajes();
+    const payload = {
+      usuId: this.usuario.user.id,
+      mensaje: texto
+    };
+
+    console.log('Enviando mensaje:', payload);
+
+    const sub = this.chatService.postMensaje(payload).subscribe({
+      next: (resp: ChatResponse) => {
+        console.log('Mensaje enviado:', resp);
+
+        if (resp?.chat) {
+          if (!this.mensajes.some(m => m.id === resp.chat.id)) {
+            this.mensajes.push(resp.chat);
+            this.scrollAlFinal();
           }
-          this.nuevaRespuesta = '';
-          this.scrollAlFinal();
-        },
-        error: err => {
-          console.error('Error enviando mensaje', err);
-          this.cargarMensajes();
         }
-      });
-  }
 
-  // Helper: mostrar autor legible (solo tenemos usuId en la interfaz)
-  autorDe(msg: Chat): string {
-    return `Usuario ${msg.usuId ?? '?'}`;
+        this.nuevaRespuesta = '';
+      },
+      error: err => {
+        console.error('Error enviando mensaje', err);
+      }
+    });
+
+    this.subscriptions.push(sub);
   }
 
   private scrollAlFinal(): void {
     try {
       const el = document.getElementById('mensajes');
-      if (el) el.scrollTop = el.scrollHeight;
-    } catch (e) { /* noop */ }
+      if (el) {
+        setTimeout(() => {
+          el.scrollTop = el.scrollHeight;
+        }, 0);
+      }
+    } catch (e) {
+      console.error('Error haciendo scroll al final', e);
+    }
   }
 }

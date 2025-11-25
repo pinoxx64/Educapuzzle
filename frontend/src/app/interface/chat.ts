@@ -1,6 +1,7 @@
 export interface Chat {
+    //sort(arg0: (a: any, b: any) => number): Chat[];
     id: number,
-    usuId: number,
+    usu: string,
     mensaje: string
 }
 

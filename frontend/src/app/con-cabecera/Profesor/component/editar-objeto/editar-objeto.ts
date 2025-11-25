@@ -35,15 +35,14 @@ export class EditarObjetoComponent implements OnInit, OnChanges {
 
   nombre: string = '';
   caracteristicasSeleccionadas: { idCaracteristica: number | null; uid: string }[] = [];
-  allCaracteristicas: any[] = []; // ← Inicializa como array vacío
+  allCaracteristicas: any[] = [];
   erMensaje: string | null = null;
 
   constructor(
     private caracteristicaService: CaracteristicaService,
     private objetoService: ObjetoService,
     private objetoCaracteristicaService: ObjetoCaracteristicaService
-  ) { 
-    // Inicializar arrays
+  ) {
     this.allCaracteristicas = [];
     this.resetCaracteristicas();
   }
@@ -74,82 +73,31 @@ export class EditarObjetoComponent implements OnInit, OnChanges {
     }
   }
 
-  // private cargarCatalogoCaracteristicas() {
-  //   if (!this.idCategoria) {
-  //     console.warn('No hay idCategoria para cargar características');
-  //     this.allCaracteristicas = [];
-  //     return;
-  //   }
-
-  //   console.log('Cargando características para categoría:', this.idCategoria);
-  //   this.caracteristicaService.getCaracteristicasPorCategoria(this.idCategoria).subscribe({
-  //     next: (response: any) => {
-  //       console.log('Respuesta de características:', response);
-        
-  //       // Maneja diferentes formatos de respuesta
-  //       let caracteristicas: any[] = [];
-        
-  //       if (Array.isArray(response)) {
-  //         console.log('1')
-  //         caracteristicas = response;
-  //       } else if (response && Array.isArray(response.caracteristicas)) {
-  //         console.log('2')
-  //         caracteristicas = response.caracteristicas;
-  //       } else if (response && response.data && Array.isArray(response.data)) {
-  //         console.log('3')
-  //         caracteristicas = response.data;
-  //       }
-  //        console.log('carac ya en front', caracteristicas)
-        
-  //       this.allCaracteristicas = caracteristicas || [];
-  //       console.log('allCaracteristicas asignadas:', this.allCaracteristicas);
-  //     },
-  //     error: (err: any) => {
-  //       console.error('Error cargando catálogo de características:', err);
-  //       this.allCaracteristicas = [];
-  //     }
-  //   });
-  // }
   private cargarCatalogoCaracteristicas() {
-  if (!this.idCategoria) {
-    console.warn('No hay idCategoria para cargar características');
-    this.allCaracteristicas = [];
-    return;
-  }
-
-  console.log('Cargando características para categoría:', this.idCategoria);
-  this.caracteristicaService.getCaracteristicasPorCategoria(this.idCategoria).subscribe({
-    next: (response: any) => {
-      console.log('Respuesta de características:', response);
-      
-      // Maneja diferentes formatos de respuesta
-      let caracteristicas: any[] = [];
-      
-      if (Array.isArray(response)) {
-        console.log('Formato 1: Array directo');
-        caracteristicas = response;
-      } else if (response && Array.isArray(response.caracteristica)) {
-        console.log('Formato 2: response.caracteristica (SINGULAR)');
-        caracteristicas = response.caracteristica;
-      } else if (response && Array.isArray(response.caracteristicas)) {
-        console.log('Formato 3: response.caracteristicas (PLURAL)');
-        caracteristicas = response.caracteristicas;
-      } else if (response && response.data && Array.isArray(response.data)) {
-        console.log('Formato 4: response.data');
-        caracteristicas = response.data;
-      }
-      
-      console.log('Características extraídas:', caracteristicas);
-      
-      this.allCaracteristicas = caracteristicas || [];
-      console.log('allCaracteristicas asignadas:', this.allCaracteristicas);
-    },
-    error: (err: any) => {
-      console.error('Error cargando catálogo de características:', err);
+    if (!this.idCategoria) {
+      console.warn('No hay idCategoria para cargar características');
       this.allCaracteristicas = [];
+      return;
     }
-  });
-}
+
+    console.log('Cargando características para categoría:', this.idCategoria);
+    this.caracteristicaService.getCaracteristicasPorCategoria(this.idCategoria).subscribe({
+      next: (response: any) => {
+        console.log('Respuesta de características:', response);
+
+        let caracteristicas: any[] = [];
+        caracteristicas = response.caracteristica;
+        console.log('Características extraídas:', caracteristicas);
+
+        this.allCaracteristicas = caracteristicas || [];
+        console.log('allCaracteristicas asignadas:', this.allCaracteristicas);
+      },
+      error: (err: any) => {
+        console.error('Error cargando catálogo de características:', err);
+        this.allCaracteristicas = [];
+      }
+    });
+  }
 
   private loadObjetoCaracteristicas() {
     if (!this.objeto) {
@@ -160,17 +108,8 @@ export class EditarObjetoComponent implements OnInit, OnChanges {
     this.objetoService.getCaracteristicasPorObjeto(this.objeto.id).subscribe({
       next: (resp: any) => {
         let lista: any[] = [];
-
-        if (Array.isArray(resp)) {
-          lista = resp;
-        } else if (resp && Array.isArray(resp.objeto)) {
           lista = resp.objeto;
-        } else {
-          const found = Object.values(resp).find(v => Array.isArray(v));
-          if (Array.isArray(found)) lista = found as any[];
-        }
-
-        if (Array.isArray(lista) && lista.length > 0) {
+        if (lista.length > 0) {
           this.caracteristicasSeleccionadas = lista.map(item => ({
             idCaracteristica: item.id ?? null,
             uid: this.newUid()

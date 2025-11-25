@@ -2,14 +2,13 @@
   <div class="mensajes" id="mensajes" role="log" aria-live="polite">
     <div *ngFor="let msg of mensajes" class="mensaje">
       <div class="meta">
-        <strong>{{ autorDe(msg) }}</strong>
-        <small *ngIf="msg.id">#{{ msg.id }}</small>
+        <strong>{{ msg.usu }}</strong>
       </div>
       <div class="texto">{{ msg.mensaje }}</div>
     </div>
 
     <div *ngIf="mensajes.length === 0" class="sin-mensajes">
-      <em>No hay mensajes aún.</em>
+      <em style="color: black;">No hay mensajes aún.</em>
     </div>
   </div>
 

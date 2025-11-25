@@ -13,9 +13,7 @@ export class ChatService {
   getMensajes(): Observable<any> {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('token', token || '');
-    return this.http.get<{ messages: any[] }>(`${environment.chatUrl}/`, { headers }).pipe(
-      map((response) => response.messages || [])
-    );
+    return this.http.get<{ messages: any[] }>(`${environment.chatUrl}/`, { headers, observe: 'response' })
   }
 
   postMensaje(body: any): Observable<any> {

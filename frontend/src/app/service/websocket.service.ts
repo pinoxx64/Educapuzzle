@@ -17,8 +17,8 @@ export class WebsocketService {
 
   getMensajes(): Observable<any> {
     return new Observable(observer => {
-      this.socket.on('messages', (response: { messages: any[] }) => {
-        observer.next(response.messages || []);
+      this.socket.on('mensaje', (response: { mensajes: any[] }) => {
+        observer.next(response.mensajes);
       });
     });
   }

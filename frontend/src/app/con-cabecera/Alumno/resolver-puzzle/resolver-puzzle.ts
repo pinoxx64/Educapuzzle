@@ -63,7 +63,7 @@ export class ResolverPuzzle implements OnInit {
 
     this.caracteristicaService.getCaracteristicasPorCategoria(this.selectedCategoriaId).subscribe({
       next: (response: any) => {
-        this.caracteristicas = (response && Array.isArray(response.caracteristica))
+        this.caracteristicas = (response)
           ? response.caracteristica
           : [];
         console.log('Características cargadas:', this.caracteristicas);
@@ -76,7 +76,7 @@ export class ResolverPuzzle implements OnInit {
 
     this.objetoService.getObjetosPorCategoria(this.selectedCategoriaId).subscribe({
       next: (response: any) => {
-        this.objetos = (response && response.objeto && Array.isArray(response.objeto))
+        this.objetos = (response)
           ? response.objeto
           : [];
         console.log('Objetos obtenidos del servicio ObjetoService:', this.objetos);
@@ -94,36 +94,13 @@ export class ResolverPuzzle implements OnInit {
 
         let arrays: any = null;
 
-        if (data && data.body && Array.isArray(data.body.Categoria) && data.body.Categoria.length === 3) {
           arrays = data.body.Categoria;
           console.log('Extraído desde data.body.Categoria:', arrays);
-        }
-        else if (data && Array.isArray(data.Categoria) && data.Categoria.length === 3) {
-          arrays = data.Categoria;
-          console.log('Extraído desde data.Categoria:', arrays);
-        }
-        else if (Array.isArray(data) && data.length === 3) {
-          arrays = data;
-          console.log('Extraído como array directo:', arrays);
-        }
-        else if (data && data.message) {
-          let m = data.message;
-          if (typeof m === 'string') {
-            try {
-              m = JSON.parse(m);
-            } catch (e) {
-              console.warn('No se pudo parsear message como JSON:', e);
-            }
-          }
-          if (Array.isArray(m) && m.length === 3) {
-            arrays = m;
-            console.log('Extraído desde data.message:', arrays);
-          }
-        }
+
 
         if (arrays) {
-          this.caracC = Array.isArray(arrays[0]) ? arrays[0].map((v: any) => Number(v)) : [];
-          this.caracF = Array.isArray(arrays[1]) ? arrays[1].map((v: any) => Number(v)) : [];
+          this.caracC = arrays[0].map((v: any) => Number(v));
+          this.caracF = arrays[1].map((v: any) => Number(v));
         } else {
           this.caracC = [];
           this.caracF = [];
