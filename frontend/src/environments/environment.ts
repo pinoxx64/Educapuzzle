@@ -5,5 +5,6 @@ export const environment = {
     objetoUrl: 'http://localhost:9090/api/objeto',
     caracteristicaUrl: 'http://localhost:9090/api/caracteristica',
     objetoCaracteristicaUrl: 'http://localhost:9090/api/objetocaracteristica',
-    websocketUrl: 'http://localhost:9090'
+    websocketUrl: 'http://localhost:9090',
+    chatUrl: 'http://localhost:9090/api/chat'
 }

@@ -21,7 +21,6 @@ Chat.init({
   sequelize: db,
   modelName: 'Chat',
   tableName: 'chats',
-  timestamps: true,
-  paranoid: true
+  timestamps: true
 });
 export default Chat;

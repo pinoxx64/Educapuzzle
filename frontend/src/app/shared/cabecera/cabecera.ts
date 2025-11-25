@@ -53,6 +53,10 @@ export class CabeceraComponent implements OnInit {
     this.router.navigate(['/ranking']);
   }
 
+  foro() {
+    this.router.navigate(['/foro']);
+  }
+
   logout() {
     sessionStorage.clear();
     this.router.navigate(['/login']);

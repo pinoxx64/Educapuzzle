@@ -8,6 +8,7 @@ import { router as CategoriaRoutes } from '../routes/CategoriaRoutes.js'
 import { router as ObjetoRoutes } from '../routes/ObjetoRoutes.js'
 import { router as CaracteristicaRoutes } from '../routes/CaracteristicasRoutes.js'
 import { router as ObjetoCaracteristicaRoutes } from '../routes/ObjetoCaracteristicaRoutes.js'
+import { router as ChatRoutes } from '../routes/ChatRoutes.js'
 
 let io;
 
@@ -23,6 +24,7 @@ class Server {
         this.objetoPath = '/api/objeto'
         this.caracteristicaPath = '/api/caracteristica'
         this.objetoCaracteristicaPath = '/api/objetocaracteristica'
+        this.chatPath = '/api/chat'
 
         this.middlewares()
         this.routes()
@@ -40,6 +42,7 @@ class Server {
         this.app.use(this.objetoPath, ObjetoRoutes)
         this.app.use(this.caracteristicaPath, CaracteristicaRoutes)
         this.app.use(this.objetoCaracteristicaPath, ObjetoCaracteristicaRoutes)
+        this.app.use(this.chatPath, ChatRoutes)
     }
 
     sockets() {
