@@ -7,11 +7,13 @@ import Objeto from "./objeto.js"
 import Caracteristicas from "./caracteristicas.js"
 import ObjetoCaracteristicas from "./objetocaracteristicas.js"
 import Chat from "./chat.js"
+import Estadistcas from "./estadistcas.js"
 
 //Usuario
 Usuario.Rol = Usuario.hasMany(UsuarioRol, {as: 'roles', foreignKey: 'idUsu'});
 Usuario.Categoria = Usuario.hasMany(Categoria, {as: 'categoria', foreignKey: 'idCreador'});
 Usuario.Chat = Usuario.hasMany(Chat, {as: 'chats', foreignKey: 'usuId'});
+Usuario.Estadistcas = Usuario.hasMany(Estadistcas, {as: 'estadistcas', foreignKey: 'usuId'});
 
 //Rol
 Rol.Usuario = Rol.hasMany(UsuarioRol, {as: 'usuarios', foreignKey: 'idRol'});
@@ -44,6 +46,9 @@ ObjetoCaracteristicas.Caracteristica = ObjetoCaracteristicas.belongsTo(Caracteri
 //Chat
 Chat.Usuario = Chat.belongsTo(Usuario, {as: 'usuarios', foreignKey: 'usuId'});
 
+// Estadistcas
+Estadistcas.Usuario = Estadistcas.belongsTo(Usuario, {as: 'usuarios', foreignKey: 'usuId'});
+
 export {
     Usuario,
     Rol,
@@ -52,5 +57,7 @@ export {
     Categoria,
     Objeto,
     Caracteristicas,
-    ObjetoCaracteristicas
+    ObjetoCaracteristicas,
+    Chat,
+    Estadistcas
 }
