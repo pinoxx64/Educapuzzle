@@ -9,6 +9,7 @@ import { router as ObjetoRoutes } from '../routes/ObjetoRoutes.js'
 import { router as CaracteristicaRoutes } from '../routes/CaracteristicasRoutes.js'
 import { router as ObjetoCaracteristicaRoutes } from '../routes/ObjetoCaracteristicaRoutes.js'
 import { router as ChatRoutes } from '../routes/ChatRoutes.js'
+import { router as EstadisticasRoutes } from '../routes/EstadisticasRoutes.js'
 
 let io;
 
@@ -25,6 +26,7 @@ class Server {
         this.caracteristicaPath = '/api/caracteristica'
         this.objetoCaracteristicaPath = '/api/objetocaracteristica'
         this.chatPath = '/api/chat'
+        this.estadisticasPath = '/api/estadisticas'
 
         this.middlewares()
         this.routes()
@@ -43,6 +45,7 @@ class Server {
         this.app.use(this.caracteristicaPath, CaracteristicaRoutes)
         this.app.use(this.objetoCaracteristicaPath, ObjetoCaracteristicaRoutes)
         this.app.use(this.chatPath, ChatRoutes)
+        this.app.use(this.estadisticasPath, EstadisticasRoutes)
     }
 
     sockets() {
