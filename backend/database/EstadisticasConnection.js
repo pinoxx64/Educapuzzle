@@ -1,18 +1,13 @@
-import Estadistcas from "../models/estadistcas";
+import Estadistcas from "../models/estadistcas.js";
 
 class EstadisticasConnection {
     getEstadisticas = async (usuId) => {
-        let estadisticas = await Estadistcas.findOne({
+        let estadisticas = []
+        estadisticas = await Estadistcas.findOne({
             where: { usuId }
         });
 
         if (!estadisticas) throw new Error('No se encontraron estadísticas para el usuario');
-        estadisticas = estadisticas.map(es => ({
-            id: es.id,
-            usuId: es.usuId,
-            sudokuJugados: es.sudokuJugados,
-            sudokuGanados: es.sudokuGanados,
-        }))
         return estadisticas;
     }
 

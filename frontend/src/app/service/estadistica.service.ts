@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class EstadisticaService {
   constructor(private http: HttpClient) { }
 
-  getEstadisticas(usuId: string): Observable<any> {
+  getEstadisticas(usuId: number): Observable<any> {
     const token = sessionStorage.getItem('token') || '';
     return this.http.get<any>(`${environment.estadisticasUrl}/${usuId}`, {
       headers: { token }
@@ -23,14 +23,14 @@ export class EstadisticaService {
     });
   }
 
-  sumarSudokuJugados(usuId: string) {
+  sumarSudokuJugados(usuId: number) {
     const token = sessionStorage.getItem('token') || '';
     return this.http.put<any>(`${environment.estadisticasUrl}/sumarSudokuJugados/${usuId}`, {}, {
       headers: { token }
     });
   }
 
-  sumarSudokuGanados(usuId: string) {
+  sumarSudokuGanados(usuId: number) {
     const token = sessionStorage.getItem('token') || '';
     return this.http.put<any>(`${environment.estadisticasUrl}/sumarSudokuGanados/${usuId}`, {}, {
       headers: { token }

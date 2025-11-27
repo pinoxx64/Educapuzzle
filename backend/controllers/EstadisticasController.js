@@ -1,4 +1,4 @@
-import { EstadisticasConnection } from "../database/EstadisticasConnection";
+import { EstadisticasConnection } from "../database/EstadisticasConnection.js";
 
 const conn = new EstadisticasConnection()
 

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Categoria } from '../../../interface/categoria';
 import { CategoriaService } from '../../../service/categoria.service';
 import { CaracteristicaService } from '../../../service/caracteristica.service';
+import { EstadisticaService } from '../../../service/estadistica.service';
 
 @Component({
   selector: 'app-resolver-puzzle',
@@ -29,7 +30,8 @@ export class ResolverPuzzle implements OnInit {
   constructor(
     private categoriaService: CategoriaService,
     private objetoService: ObjetoService,
-    private caracteristicaService: CaracteristicaService
+    private caracteristicaService: CaracteristicaService,
+    private estadisticasService: EstadisticaService
   ) { }
 
   ngOnInit() {
@@ -168,6 +170,24 @@ export class ResolverPuzzle implements OnInit {
 
     this.categoriaService.resolverSudoku(usuarioId, this.caracC, this.caracF, this.tabla).subscribe({
       next: (res: any) => {
+        this.estadisticasService.sumarSudokuJugados(usuarioId).subscribe({
+          next: () => {
+            console.log('Estadísticas actualizadas: Sudoku jugados incrementados');
+          },
+          error: (err) => {
+            console.error('Error al actualizar estadísticas:', err);
+          }
+        });
+        if (res.body.Categoria.puntosGanados == 10) {
+          this.estadisticasService.sumarSudokuGanados(usuarioId).subscribe({
+            next: () => {
+              console.log('Estadísticas actualizadas: Sudoku ganados incrementados');
+            },
+            error: (err) => {
+              console.error('Error al actualizar estadísticas:', err);
+            }
+          });
+        }
         console.log('res', res.body.Categoria)
         this.resultado = res.body.Categoria;
         this.cargando = false;
