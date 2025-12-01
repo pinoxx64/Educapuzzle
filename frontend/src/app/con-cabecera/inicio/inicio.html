@@ -1,3 +1,7 @@
 <h1>Bienvenido {{ usuario?.user?.name }}</h1>
-<p>Sudokus Ganados: {{ estadisticas?.estadisticas?.sudokuGanados }}</p>
-<p>Sudokus Jugados: {{ estadisticas?.estadisticas?.sudokuJugados }}</p>
+
+<p-chart 
+  type="pie" 
+  [data]="pieData" 
+  [options]="pieOptions">
+</p-chart>
