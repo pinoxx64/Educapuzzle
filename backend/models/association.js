@@ -8,6 +8,7 @@ import Caracteristicas from "./caracteristicas.js"
 import ObjetoCaracteristicas from "./objetocaracteristicas.js"
 import Chat from "./chat.js"
 import Estadistcas from "./estadistcas.js"
+import TemasChat from "./temaschat.js"
 
 //Usuario
 Usuario.Rol = Usuario.hasMany(UsuarioRol, {as: 'roles', foreignKey: 'idUsu'});
@@ -45,6 +46,10 @@ ObjetoCaracteristicas.Caracteristica = ObjetoCaracteristicas.belongsTo(Caracteri
 
 //Chat
 Chat.Usuario = Chat.belongsTo(Usuario, {as: 'usuarios', foreignKey: 'usuId'});
+Chat.TemasChat = Chat.belongsTo(TemasChat, { as: 'temasChat', foreignKey: 'temasId' });
+
+// TemasChat
+TemasChat.Chats = TemasChat.hasMany(Chat, { as: 'chats', foreignKey: 'temasId' });
 
 // Estadistcas
 Estadistcas.Usuario = Estadistcas.belongsTo(Usuario, {as: 'usuarios', foreignKey: 'usuId'});
@@ -59,5 +64,6 @@ export {
     Caracteristicas,
     ObjetoCaracteristicas,
     Chat,
-    Estadistcas
+    Estadistcas,
+    TemasChat
 }

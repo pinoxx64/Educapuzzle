@@ -10,15 +10,27 @@ import { map } from 'rxjs/operators';
 export class ChatService {
   constructor(private http: HttpClient) { }
 
-  getMensajes(): Observable<any> {
+  getMensajesPorTemas(idTemas: Number): Observable<any> {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('token', token || '');
-    return this.http.get<{ messages: any[] }>(`${environment.chatUrl}/`, { headers, observe: 'response' })
+    return this.http.get<{ messages: any[] }>(`${environment.chatUrl}/chats/${idTemas}`, { headers, observe: 'response' })
   }
 
   postMensaje(body: any): Observable<any> {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('token', token || '');
     return this.http.post<any>(`${environment.chatUrl}/`, body, { headers });
+  }
+
+  postTema(body: any): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('token', token || '');
+    return this.http.post<any>(`${environment.chatUrl}/tema`, body, { headers });
+  }
+
+  getNombreTemas(): Observable<any> {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('token', token || '');
+    return this.http.get<{ nombre: string }>(`${environment.chatUrl}/nombre`, { headers, observe: 'response' })
   }
 }

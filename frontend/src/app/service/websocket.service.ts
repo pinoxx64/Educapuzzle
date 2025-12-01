@@ -22,4 +22,12 @@ export class WebsocketService {
       });
     });
   }
+
+  getTemas(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('tema', (response: { temas: any[] }) => {
+        observer.next(response.temas);
+      });
+    });
+  }
 }
