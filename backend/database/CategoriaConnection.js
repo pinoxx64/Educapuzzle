@@ -488,6 +488,7 @@ class CategoriaConnection {
 
         let aciertos = 0;
         const totalCeldas = tabla.length;
+        let tablaAciertos = Array(totalCeldas).fill(false);
 
         // Validar que los parámetros sean válidos
         if (!caracF || !caracC || !tabla || !usuarioId) {
@@ -529,6 +530,7 @@ class CategoriaConnection {
 
             if (tieneCaracFila && tieneCaracCol) {
                 aciertos++;
+                tablaAciertos[i] = true;
             }
         }
 
@@ -555,7 +557,8 @@ class CategoriaConnection {
             porcentaje: Math.round((aciertos / totalCeldas) * 100),
             puntosGanados,
             completado: aciertos === totalCeldas,
-            puntosUsuario: puntosActuales + puntosGanados
+            puntosUsuario: puntosActuales + puntosGanados,
+            tablaAciertos
         };
 
         return resultado;

@@ -1,0 +1,17 @@
+html,
+body,
+app-root {
+  height: 100%;
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  background: #040220;
+  margin: 0;
+  padding: 0;
+}
+
+body,
+app-root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

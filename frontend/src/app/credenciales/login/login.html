@@ -1,26 +1,15 @@
-<div class="login-container" style="background-color: grey;">
-    <h3>Inicia Sesión</h3>
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-        <label for="correo">Correo electronico</label>
-        <input
-            type="email"
-            id="correo"
-            name="correo"
-            [(ngModel)]="correo"
-            required
-        /> 
-        <label for="contrasena">Contraseña</label>
-        <input
-            type="password"
-            id="contrasena"
-            name="contrasena"
-            [(ngModel)]="contrasena"
-            required
-        />
-        <button type="submit" style="color: white;" [disabled]="!loginForm.valid">Iniciar Sesión</button>
-    </form> 
-        <!-- <a href="#">Forget Password<br> </a> -->
-    <div class="text-center">
-        <a style="color: #59238F;" href="/registro">Registrate</a>
+<div class="auth-wrapper">
+    <div class="login-container">
+        <h3>Inicia Sesión</h3>
+        <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+            <label for="correo">Correo electronico</label>
+            <input type="email" id="correo" name="correo" [(ngModel)]="correo" required />
+            <label for="contrasena">Contraseña</label>
+            <input type="password" id="contrasena" name="contrasena" [(ngModel)]="contrasena" required />
+            <button type="submit" style="color: white;" [disabled]="!loginForm.valid">Iniciar Sesión</button>
+        </form>
+        <div class="text-center">
+            <a style="color: #59238F;" href="/registro">Registrate</a>
+        </div>
     </div>
 </div>
