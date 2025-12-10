@@ -84,23 +84,8 @@ export class VerCaracteristicasComponent {
     this.CaracteristicaService.getCaracteristicasPorCategoria(this.categoria.id).subscribe({
       next: (resp) => {
         console.log('Respuesta cruda getcaracteristicasPorCategoria:', resp);
-        let parsed: Caracteristica[] = [];
-        console.log(resp.data)
-        if (Array.isArray(resp)) {
-          parsed = resp as Caracteristica[];
-        } else if (resp && Array.isArray(resp.caracteristica)) {
-          parsed = resp.caracteristica;
-        } else if (resp && Array.isArray(resp.data)) {
-          parsed = resp.data;
-        } else if (resp && resp.objeto && !Array.isArray(resp.objeto)) {
-          parsed = [resp.objeto];
-        } else if (resp && typeof resp === 'object') {
-          const found = Object.values(resp).find(v => Array.isArray(v));
-          if (found) parsed = found as Caracteristica[];
-        }
-
+        let parsed = resp.caracteristica;
         if (!parsed) parsed = [];
-
         console.log('caracteristicas parseados:', parsed);
         this.caracteristicas = parsed || [];
       },
@@ -110,7 +95,6 @@ export class VerCaracteristicasComponent {
       }
     });
   }
-
 
   abrirCrearCaracteristica() { this.dialogCrearVisible = true; }
   cerrarCrearCaracteristica() { this.dialogCrearVisible = false; }

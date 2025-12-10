@@ -1,1 +1,7 @@
-<h1>Bienvenido</h1>
+<h1>Bienvenido {{ usuario?.user?.name }}</h1>
+
+<p-chart 
+  type="pie" 
+  [data]="pieData" 
+  [options]="pieOptions">
+</p-chart>

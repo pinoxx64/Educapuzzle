@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Categoria } from '../../../interface/categoria';
 import { CategoriaService } from '../../../service/categoria.service';
 import { CaracteristicaService } from '../../../service/caracteristica.service';
+import { EstadisticaService } from '../../../service/estadistica.service';
 
 @Component({
   selector: 'app-resolver-puzzle',
@@ -22,6 +23,8 @@ export class ResolverPuzzle implements OnInit {
   caracF: number[] = [];
   tabla: number[] = Array(9).fill(0);
 
+  tablaAciertos: boolean[] = [];
+
   cargando = false;
   error = '';
   resultado: any = null;
@@ -29,7 +32,8 @@ export class ResolverPuzzle implements OnInit {
   constructor(
     private categoriaService: CategoriaService,
     private objetoService: ObjetoService,
-    private caracteristicaService: CaracteristicaService
+    private caracteristicaService: CaracteristicaService,
+    private estadisticasService: EstadisticaService
   ) { }
 
   ngOnInit() {
@@ -52,6 +56,7 @@ export class ResolverPuzzle implements OnInit {
     this.caracC = [];
     this.caracF = [];
     this.tabla = Array(9).fill(0);
+    this.tablaAciertos = [];
     this.objetos = [];
     this.caracteristicas = [];
     this.resultado = null;
@@ -63,81 +68,27 @@ export class ResolverPuzzle implements OnInit {
 
     this.caracteristicaService.getCaracteristicasPorCategoria(this.selectedCategoriaId).subscribe({
       next: (response: any) => {
-        this.caracteristicas = (response && Array.isArray(response.caracteristica))
+        this.caracteristicas = (response)
           ? response.caracteristica
           : [];
-        console.log('Características cargadas:', this.caracteristicas);
-      },
-      error: (err) => {
-        console.error('Error al cargar características:', err);
-        this.caracteristicas = [];
       }
     });
 
     this.objetoService.getObjetosPorCategoria(this.selectedCategoriaId).subscribe({
       next: (response: any) => {
-        this.objetos = (response && response.objeto && Array.isArray(response.objeto))
+        this.objetos = (response)
           ? response.objeto
           : [];
-        console.log('Objetos obtenidos del servicio ObjetoService:', this.objetos);
-      },
-      error: (err) => {
-        console.error('Error al cargar objetos:', err);
-        this.error = 'Error al cargar objetos de la categoría';
-        this.cargando = false;
       }
     });
 
     this.categoriaService.sudoku(this.selectedCategoriaId).subscribe({
       next: (data: any) => {
-        console.log('Respuesta crearSudoku:', data);
-
-        let arrays: any = null;
-
-        if (data && data.body && Array.isArray(data.body.Categoria) && data.body.Categoria.length === 3) {
-          arrays = data.body.Categoria;
-          console.log('Extraído desde data.body.Categoria:', arrays);
-        }
-        else if (data && Array.isArray(data.Categoria) && data.Categoria.length === 3) {
-          arrays = data.Categoria;
-          console.log('Extraído desde data.Categoria:', arrays);
-        }
-        else if (Array.isArray(data) && data.length === 3) {
-          arrays = data;
-          console.log('Extraído como array directo:', arrays);
-        }
-        else if (data && data.message) {
-          let m = data.message;
-          if (typeof m === 'string') {
-            try {
-              m = JSON.parse(m);
-            } catch (e) {
-              console.warn('No se pudo parsear message como JSON:', e);
-            }
-          }
-          if (Array.isArray(m) && m.length === 3) {
-            arrays = m;
-            console.log('Extraído desde data.message:', arrays);
-          }
-        }
-
+        let arrays = data.body.Categoria;
         if (arrays) {
-          this.caracC = Array.isArray(arrays[0]) ? arrays[0].map((v: any) => Number(v)) : [];
-          this.caracF = Array.isArray(arrays[1]) ? arrays[1].map((v: any) => Number(v)) : [];
-        } else {
-          this.caracC = [];
-          this.caracF = [];
+          this.caracC = arrays[0].map((v: any) => Number(v));
+          this.caracF = arrays[1].map((v: any) => Number(v));
         }
-
-        console.log('caracC asignadas:', this.caracC);
-        console.log('caracF asignadas:', this.caracF);
-        console.log('tabla (vacía para llenar):', this.tabla);
-
-        this.cargando = false;
-      },
-      error: (err: any) => {
-        console.error('Error al generar sudoku:', err);
-        this.error = 'Error al generar sudoku';
         this.cargando = false;
       }
     });
@@ -149,22 +100,23 @@ export class ResolverPuzzle implements OnInit {
 
   nombreCaracteristica(id: number): string {
     const carac = this.caracteristicas.find(c => c.id === id);
-    return carac ? carac.nombre : `Característica ${id}`;
+    return carac ? carac.nombre : `Categoria no introducida`;
+  }
+
+  getColorCelda(fila: number, col: number) {
+    if (!this.tablaAciertos || this.tablaAciertos.length === 0) return '';
+
+    const i = fila * 3 + col;
+
+    if (this.tablaAciertos[i] === true) return 'acierto';
+    if (this.tablaAciertos[i] === false) return 'error';
+    return '';
   }
 
   finalizarSudoku() {
     this.error = '';
     this.resultado = null;
-
-    if (!this.selectedCategoriaId) {
-      this.error = 'Selecciona una categoría primero';
-      return;
-    }
-
-    if (!this.caracC.length || !this.caracF.length) {
-      this.error = 'Sudoku incompleto: faltan características';
-      return;
-    }
+    this.tablaAciertos = [];
 
     let usuarioId: number | null = null;
 
@@ -172,39 +124,42 @@ export class ResolverPuzzle implements OnInit {
     if (userStr) {
       try {
         const userData = JSON.parse(userStr);
-        if (userData && userData.user && userData.user.id) {
-          usuarioId = userData.user.id;
-        }
-      } catch (e) {
-        console.error('Error al parsear usuario:', e);
-      }
+        if (userData?.user?.id) usuarioId = userData.user.id;
+      } catch { }
     }
 
     if (!usuarioId) {
-      this.error = 'Usuario no identificado (no se pudo obtener usuarioId)';
+      this.error = 'Usuario no identificado';
       return;
     }
-
-    console.log('Usuario ID:', usuarioId);
 
     this.cargando = true;
 
     this.categoriaService.resolverSudoku(usuarioId, this.caracC, this.caracF, this.tabla).subscribe({
       next: (res: any) => {
-        console.log('res', res.body.Categoria)
         this.resultado = res.body.Categoria;
+        this.tablaAciertos = res.body.Categoria.tablaAciertos;
         this.cargando = false;
+        this.estadisticasService.sumarSudokuJugados(usuarioId).subscribe();
+        let falla = false;
+
+        this.tablaAciertos.forEach(ta => {
+          if (ta == false) {
+            falla = true
+            console.log("FALLA");
+          }
+        });
+
+        if (falla == false) {
+          this.estadisticasService.sumarSudokuGanados(usuarioId).subscribe();
+        }
       },
       error: (err: any) => {
-        console.error('Error al verificar sudoku:', err);
         this.error = err.error?.message || 'Error al verificar sudoku';
         this.cargando = false;
       }
     });
-  }
 
-  nombreObjetoPorId(id: number) {
-    const o = this.objetos.find(x => x.id === id);
-    return o ? (o.nombre || `Objeto ${o.id}`) : '';
+
   }
 }

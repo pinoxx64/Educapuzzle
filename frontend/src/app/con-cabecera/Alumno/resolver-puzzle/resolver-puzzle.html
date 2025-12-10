@@ -30,7 +30,7 @@
             {{ nombreCaracteristica(caracF[filaIdx]) }}
           </div>
 
-          <div *ngFor="let col of [0, 1, 2]" style="border:1px solid #ddd; padding:8px; border-radius:4px; min-height:80px;">
+          <div *ngFor="let col of [0, 1, 2]" style="border:1px solid #ddd; padding:8px; border-radius:4px; min-height:80px;" [ngClass]="getColorCelda(filaIdx, col)">
             <select [(ngModel)]="tabla[filaIdx * 3 + col]" style="width:100%; padding:0.4rem; height:100%; font-size:0.9rem;">
               <option [ngValue]="0">Ninguno</option>
               <option *ngFor="let opt of opcionesObjetos()" [ngValue]="opt.id">

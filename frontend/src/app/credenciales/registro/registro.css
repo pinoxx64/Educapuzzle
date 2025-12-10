@@ -1,3 +1,13 @@
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, var(--bg-dark), #071018 120%);
+  padding: 40px 16px;
+  box-sizing: border-box;
+}
+
 :root{
   --bg-dark: #0b0f14;
   --card-bg: #ffffff;
@@ -7,16 +17,13 @@
   --radius: 10px;
 }
 
-/* Reset básico y tipografía del sistema */
 html, body {
   height: 100%;
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   background: linear-gradient(180deg, var(--bg-dark), #071018 120%);
   color: #111;
 }
 
-/* Centrar la tarjeta en la pantalla */
 body {
   display: flex;
   align-items: center;
@@ -25,18 +32,16 @@ body {
   box-sizing: border-box;
 }
 
-/* Tarjeta clara sobre fondo oscuro */
 .login-container{
+  background-color: grey;
   width: 360px;
   max-width: 94%;
-  background: var(--card-bg);
-  border-radius: var(--radius);
+  border-radius: 30px;
   padding: 22px;
   box-shadow: 0 10px 30px rgba(2,6,23,0.6);
   border: 1px solid rgba(0,0,0,0.06);
 }
 
-/* Título */
 .login-container h3{
   margin: 0 0 14px 0;
   text-align: center;
@@ -45,21 +50,18 @@ body {
   color: #0f1722;
 }
 
-/* Formulario */
 form{
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Labels */
 .login-container label{
   font-size: 0.85rem;
   color: var(--muted);
   margin-bottom: 4px;
 }
 
-/* Inputs simples y claros */
 .login-container input[type="text"],
 .login-container input[type="email"],
 .login-container input[type="password"],
@@ -75,14 +77,12 @@ form{
   box-sizing: border-box;
 }
 
-/* Focus accesible */
 .login-container input:focus{
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 6px 18px rgba(43,109,246,0.12);
 }
 
-/* Botón primario */
 .login-container button[type="submit"]{
   margin-top: 8px;
   padding: 10px 12px;
@@ -95,13 +95,11 @@ form{
   font-size: 0.98rem;
 }
 
-/* Botón deshabilitado */
 .login-container button[disabled]{
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* Link debajo */
 .login-container .text-center{
   text-align: center;
   margin-top: 12px;
@@ -115,7 +113,6 @@ form{
   text-decoration: underline;
 }
 
-/* Responsivo */
 @media (max-width: 420px){
   .login-container{
     padding: 16px;
