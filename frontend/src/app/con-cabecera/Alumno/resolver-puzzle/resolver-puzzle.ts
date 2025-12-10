@@ -125,7 +125,7 @@ export class ResolverPuzzle implements OnInit {
       try {
         const userData = JSON.parse(userStr);
         if (userData?.user?.id) usuarioId = userData.user.id;
-      } catch {}
+      } catch { }
     }
 
     if (!usuarioId) {
@@ -140,11 +140,26 @@ export class ResolverPuzzle implements OnInit {
         this.resultado = res.body.Categoria;
         this.tablaAciertos = res.body.Categoria.tablaAciertos;
         this.cargando = false;
+        this.estadisticasService.sumarSudokuJugados(usuarioId).subscribe();
+        let falla = false;
+
+        this.tablaAciertos.forEach(ta => {
+          if (ta == false) {
+            falla = true
+            console.log("FALLA");
+          }
+        });
+
+        if (falla == false) {
+          this.estadisticasService.sumarSudokuGanados(usuarioId).subscribe();
+        }
       },
       error: (err: any) => {
         this.error = err.error?.message || 'Error al verificar sudoku';
         this.cargando = false;
       }
     });
+
+
   }
 }
