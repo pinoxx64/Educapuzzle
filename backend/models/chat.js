@@ -16,7 +16,11 @@ Chat.init({
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  mensaje: DataTypes.STRING
+  mensaje: DataTypes.STRING,
+  temasId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  }
 }, {
   sequelize: db,
   modelName: 'Chat',

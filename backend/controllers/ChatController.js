@@ -4,7 +4,7 @@ const conn = new ChatConnection()
 
 const ChatController = {
     funGetMensajes: (req, res) => {
-        conn.getMensajes()
+        conn.getMensajesPorTemas(req.params.id)
             .then(chat => {
                 res.status(200).json({
                     status: 200,
@@ -22,7 +22,7 @@ const ChatController = {
     },
 
     funPostMensaje: (req, res) => {
-        conn.postMensaje(req.body.usuId, req.body.mensaje)
+        conn.postMensaje(req.body.usuId, req.body.mensaje, req.body.temasId)
             .then(mensaje => {
                 res.status(200).json({
                     status: 200,
@@ -36,7 +36,40 @@ const ChatController = {
                     message: err.message
                 })
             })
-    }
-}
+    },
 
+    funGetNombreTemas: (req, res) => {
+        conn.getNombreTemas()
+            .then(temas => {
+                res.status(200).json({
+                    status: 200,
+                    message: "Nombre del tema obtenido correctamente",
+                    temas: temas
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    status: 500,
+                    message: err.message
+                })
+            })
+    },
+
+    funPostTema: (req, res) => {
+        conn.postTema(req.body.nombre)
+            .then(tema => {
+                res.status(200).json({
+                    status: 200,
+                    message: "Tema creado correctamente",
+                    tema: tema
+                })
+            })
+            .catch(err => {
+                res.status(500).json({
+                    status: 500,
+                    message: err.message
+                })
+            })
+        }
+}
 export default ChatController

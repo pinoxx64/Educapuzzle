@@ -1,5 +1,25 @@
 <div class="simple-foro">
-  <div class="mensajes" id="mensajes" role="log" aria-live="polite">
+
+<p-select
+  [options]="temas"
+  optionLabel="nombre"
+  optionValue="id"
+  placeholder="Selecciona un tema"
+  [(ngModel)]="temaSeleccionado"
+  (onChange)="cargarMensajesDeTema()"
+  class="w-full">
+</p-select>
+
+<p-button
+  *ngIf="isAdmin"
+  type="button"
+  label="Crear Tema"
+  icon="pi pi-plus"
+  (click)="crearTema()"
+  class="p-button-text">
+</p-button>
+
+  <div class="mensajes" id="mensajes" role="log" aria-live="polite" style="color: black;">
     <div *ngFor="let msg of mensajes" class="mensaje">
       <div class="meta">
         <strong>{{ msg.usu }}</strong>
@@ -8,19 +28,37 @@
     </div>
 
     <div *ngIf="mensajes.length === 0" class="sin-mensajes">
-      <em style="color: black;">No hay mensajes aún.</em>
+      <em>No hay mensajes aún.</em>
     </div>
   </div>
 
   <div class="barra-escribir">
-    <textarea
-      [(ngModel)]="nuevaRespuesta"
-      placeholder="Escribe tu mensaje..."
-      (keydown.enter)="enviarRespuesta(); $event.preventDefault();"
-      rows="1"
-      class="input-mensaje"
-      aria-label="Escribe tu mensaje">
+    <textarea [(ngModel)]="nuevaRespuesta" placeholder="Escribe tu mensaje..."
+      (keydown.enter)="enviarRespuesta(); $event.preventDefault();" rows="1" class="input-mensaje">
     </textarea>
-    <button (click)="enviarRespuesta()" class="btn-enviar" aria-label="Enviar">Enviar</button>
+
+    <button (click)="enviarRespuesta()" class="btn-enviar">Enviar</button>
   </div>
+
 </div>
+
+<p-dialog header="Crear categoría"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{width: '600px'}"
+  (onHide)="handleClose()">
+
+  <form (ngSubmit)="save()">
+    <div class="p-field">
+      <label for="nombre">Nombre:</label>
+      <input id="nombre" type="text" pInputText [(ngModel)]="nombre" name="nombre"
+        required class="input-grande" />
+    </div>
+
+    <div style="margin-top:2rem; text-align:right;">
+      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="handleClose()"></button>
+      <button pButton type="submit" label="Guardar" class="p-button-success" style="margin-left:1rem;"></button>
+    </div>
+  </form>
+
+</p-dialog>
